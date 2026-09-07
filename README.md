@@ -10,7 +10,7 @@ a paste.
 
 ---
 
-## Project structure
+## Project structure:
 
 ```
 extension/
@@ -36,7 +36,7 @@ extension/
     └── icon.png
 ```
 
-### Data flow
+### Data flow:
 
 ```
 Alt+Q ─► commands API ─► service worker ─► tabs.captureVisibleTab
@@ -57,7 +57,7 @@ Alt+A ─► service worker ─► stored result ─► content-script
 
 ---
 
-## Installation (Chromium: Chrome, Edge, Brave, Arc…)
+## Installation (Chromium: Chrome, Edge, Brave, Arc…):
 
 1. Copy/download the `extension/` folder anywhere on disk.
 2. Open `chrome://extensions` (or `edge://extensions`).
@@ -68,7 +68,7 @@ Alt+A ─► service worker ─► stored result ─► content-script
    - confirm/adjust the base URL and model
    - tune typing delay & capture format
 
-### Configure the keyboard shortcuts
+### Configure the keyboard shortcuts:
 
 - Default: `Alt+Q` capture & analyze, `Alt+A` type answer.
 - Rebind from the Options page (supported browsers) or directly at
@@ -76,7 +76,7 @@ Alt+A ─► service worker ─► stored result ─► content-script
 - Constraints set by Chromium: must include `Ctrl` or `Alt` (optionally
   `Shift`); browser-reserved combos are rejected.
 
-## Supported AI providers
+## Supported AI providers:
 
 QuizKey speaks **three API dialects natively** and picks the right one from the base
 URL (or you pin it under *API dialect* in settings):
@@ -107,7 +107,7 @@ origin QuizKey requests the optional host permission the moment you change the b
 URL (and via **Grant access** / **Test connection**). Without that grant the request is
 subject to CORS, which local servers block — the usual cause of "nothing happens".
 
-### Provider-quirk handling (why earlier versions "didn't work")
+### Provider-quirk handling (why earlier versions "didn't work"):
 
 - **Reasoning models** (Gemini 2.5/3.x, GPT‑5.x, o‑series, Claude 4.6+/5, DeepSeek‑R1…)
   get a 4096‑token output budget, low reasoning effort and **no `temperature`**.
@@ -124,7 +124,7 @@ subject to CORS, which local servers block — the usual cause of "nothing happe
 - The overlay and outlines are hidden **before** the screenshot so the model never sees
   a previous answer card.
 
-### Debugging a provider
+### Debugging a provider:
 
 Settings → **Test connection** lists the endpoint's models (and warns if yours isn't
 there), **Load models** fills the model picker, and **Run diagnostic** sends a built-in
@@ -132,7 +132,7 @@ sample quiz image through the real capture → analyze pipeline and prints the p
 answer or the exact provider error. **Recent API calls** shows URL, status and timing
 of the last requests (keys are never logged).
 
-## Configuration reference
+## Configuration reference:
 
 | Key | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -155,7 +155,7 @@ of the last requests (keys are never logged).
 | `extraInstructions` | string | `""` | Appended to the analysis prompt. |
 | `overlayPosition` | string | `top-right` | Where the in-page panel appears. |
 
-## Typing realism
+## Typing realism:
 
 Each character dispatches the exact sequence a physical keyboard produces:
 
@@ -170,7 +170,7 @@ Each character dispatches the exact sequence a physical keyboard produces:
 - Human cadence: configurable base delay, random jitter, longer pauses at
   word boundaries and after punctuation.
 
-## Error handling
+## Error handling:
 
 Every failure path produces a typed `QuizKeyError` with a stable code and a
 user-facing message shown as an on-page toast and in the popup:
@@ -181,7 +181,7 @@ user-facing message shown as an on-page toast and in the popup:
 
 The action badge mirrors state: `…` working, `✓` success, `!` failure.
 
-## Security notes
+## Security notes:
 
 - MV3 with a **module service worker**; no remote code, no `eval`.
 - Minimal permissions: `activeTab` (granted by the shortcut gesture),
@@ -193,7 +193,7 @@ The action badge mirrors state: `…` working, `✓` success, `!` failure.
 - Content scripts run in the isolated world and communicate via typed
   messages only.
 
-## Troubleshooting
+## Troubleshooting:
 
 ### “This page is restricted…” — what it means and what to do
 
@@ -208,7 +208,7 @@ QuizKey classifies the tab and tells you the exact cause. The cases:
 | Grant seems ignored / file still silent | Couldn't see WHY without a visible error — hidden cause: the model answered prose instead of JSON. | QuizKey now surfaces the model's best-effort prose answer in the overlay instead of failing silently. Use a stronger vision model if the question is image-heavy. |
 | Tab was open **before** install/reload | Its content script is missing. | QuizKey **auto-injects on capture** (via `chrome.scripting`) — if you still see a messaging error, reload that tab once. |
 
-### Other common issues
+### Other common issues:
 
 - **“Unreadable response” / empty reply** — the model is not vision-capable, or spent its
   output budget on reasoning. Use a vision model; for reasoning models keep `maxOutputTokens`
