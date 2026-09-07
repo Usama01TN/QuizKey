@@ -1,4 +1,5 @@
 # QuizKey — AI Quiz Assistant (Manifest V3)
+![Demo](public/Screenshot.png)
 
 Press a keyboard shortcut → QuizKey screenshots the visible tab, sends it to a
 vision AI model, detects the quiz question and answers, then types the best
