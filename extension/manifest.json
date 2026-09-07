@@ -1,0 +1,78 @@
+{
+  "manifest_version": 3,
+  "name": "QuizKey — AI Quiz Assistant",
+  "version": "1.1.0",
+  "description": "Capture any quiz with a keyboard shortcut, analyze it with a vision AI model, and type the answer with realistic, per-character keyboard events.",
+  "minimum_chrome_version": "102",
+  "icons": {
+    "16": "icons/icon.png",
+    "48": "icons/icon.png",
+    "128": "icons/icon.png"
+  },
+  "permissions": [
+    "activeTab",
+    "storage",
+    "commands",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://api.openai.com/*",
+    "https://api.anthropic.com/*",
+    "https://generativelanguage.googleapis.com/*",
+    "https://openrouter.ai/*"
+  ],
+  "optional_host_permissions": [
+    "http://*/*",
+    "https://*/*",
+    "file:///*"
+  ],
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false,
+      "css": [
+        "content/overlay.css"
+      ],
+      "js": [
+        "content/dom-detector.js",
+        "content/typing-simulator.js",
+        "content/overlay.js",
+        "content/content-script.js"
+      ]
+    }
+  ],
+  "action": {
+    "default_title": "QuizKey — AI Quiz Assistant",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon.png",
+      "48": "icons/icon.png",
+      "128": "icons/icon.png"
+    }
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "commands": {
+    "capture-and-answer": {
+      "suggested_key": {
+        "default": "Alt+Q"
+      },
+      "description": "Capture the page and analyze the visible quiz question"
+    },
+    "type-answer": {
+      "suggested_key": {
+        "default": "Alt+A"
+      },
+      "description": "Type the generated answer into the page, character by character"
+    }
+  }
+}

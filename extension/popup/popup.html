@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>QuizKey</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-key">QK</span>
+        <div>
+          <h1>QuizKey</h1>
+          <p class="tagline">AI quiz assistant</p>
+        </div>
+      </div>
+      <span id="status-pill" class="pill pill-idle">Checking…</span>
+    </header>
+
+    <section class="shortcuts" id="shortcuts">
+      <p class="section-label">Shortcuts</p>
+      <div id="shortcut-list" class="shortcut-list"></div>
+    </section>
+
+    <section class="actions">
+      <button id="btn-capture" class="btn btn-primary" disabled>
+        <span class="btn-title">Capture &amp; analyze</span>
+        <span class="btn-sub" id="capture-hint">Alt+Q</span>
+      </button>
+      <button id="btn-type" class="btn" disabled>
+        <span class="btn-title">Type answer</span>
+        <span class="btn-sub" id="type-hint">Alt+A</span>
+      </button>
+    </section>
+
+    <p id="notice" class="notice" hidden></p>
+
+    <section class="result" id="result" hidden>
+      <p class="section-label">Latest analysis</p>
+      <p id="result-question" class="result-question"></p>
+      <div class="result-answer">
+        <span class="result-answer-label">Best answer</span>
+        <span id="result-answer" class="result-answer-text"></span>
+      </div>
+      <div class="conf">
+        <div class="conf-track"><div id="result-conf" class="conf-fill"></div></div>
+        <span id="result-conf-num" class="conf-num"></span>
+      </div>
+    </section>
+
+    <footer class="footbar">
+      <button id="btn-options" class="link">Settings</button>
+      <span class="dot"></span>
+      <span id="model-label" class="model-label"></span>
+    </footer>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

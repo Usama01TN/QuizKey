@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>QuizKey — Settings</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <header class="page-head">
+        <div class="brand">
+          <span class="brand-key">QK</span>
+          <div>
+            <h1>QuizKey settings</h1>
+            <p>AI provider, capture, typing behavior and shortcuts.</p>
+          </div>
+        </div>
+        <div class="head-actions">
+          <span id="save-state" class="save-state">All changes saved</span>
+          <button id="btn-reset" class="btn btn-ghost">Reset defaults</button>
+        </div>
+      </header>
+
+      <!-- ============================ AI provider ============================ -->
+      <section class="card">
+        <h2><span class="num">01</span> AI provider</h2>
+        <p class="card-desc">
+          Pick a provider and paste its key. QuizKey speaks three API dialects natively —
+          OpenAI Chat Completions (also OpenRouter, OmniRoute, LM&nbsp;Studio, Ollama, Azure, vLLM…),
+          Google Gemini and Anthropic Claude. The key is stored in <code>chrome.storage.local</code>
+          only and is sent solely to the configured endpoint.
+        </p>
+
+        <div class="grid">
+          <label class="field field-wide">
+            <span>Provider</span>
+            <select id="providerPreset"></select>
+            <span id="provider-note" class="field-note"></span>
+          </label>
+
+          <label class="field field-wide">
+            <span>Base URL <em>(paste with or without <code>/v1</code>; endpoint suffixes are stripped)</em></span>
+            <div class="key-row">
+              <input id="apiBaseUrl" type="text" placeholder="https://api.openai.com/v1" spellcheck="false" autocomplete="off" />
+              <button id="btn-grant" class="btn btn-ghost btn-small" type="button">Grant access</button>
+            </div>
+            <span id="grant-state" class="test-result"></span>
+          </label>
+
+          <label class="field">
+            <span>API key <em id="key-hint">(required)</em></span>
+            <div class="key-row">
+              <input id="apiKey" type="password" placeholder="sk-…" spellcheck="false" autocomplete="off" />
+              <button id="btn-toggle-key" class="btn btn-ghost btn-small" type="button">Show</button>
+            </div>
+            <span id="key-link" class="field-note"></span>
+          </label>
+
+          <label class="field">
+            <span>API dialect <em>(auto-detected from the URL)</em></span>
+            <select id="apiStyle">
+              <option value="auto">Auto-detect</option>
+              <option value="openai">OpenAI Chat Completions</option>
+              <option value="gemini">Google Gemini (native)</option>
+              <option value="anthropic">Anthropic Messages</option>
+            </select>
+            <span id="style-detected" class="field-note"></span>
+          </label>
+
+          <label class="field field-wide">
+            <span>Model <em>(must accept image input)</em></span>
+            <div class="key-row">
+              <input id="model" type="text" list="model-list" placeholder="gpt-4o-mini" spellcheck="false" autocomplete="off" />
+              <datalist id="model-list"></datalist>
+              <button id="btn-models" class="btn btn-ghost btn-small" type="button">Load models</button>
+            </div>
+            <span id="models-state" class="field-note"></span>
+          </label>
+
+          <label class="field">
+            <span>Max output tokens <em>(keep ≥ 4096 for reasoning models)</em></span>
+            <input id="maxOutputTokens" type="number" min="256" max="65536" step="256" />
+          </label>
+          <label class="field">
+            <span>Max image size <em>(longest edge in px, 0 = original)</em></span>
+            <input id="maxImageEdge" type="number" min="0" max="8000" step="100" />
+          </label>
+        </div>
+
+        <label class="field field-wide">
+          <span>Extra instructions <em>(optional — appended to the analysis prompt)</em></span>
+          <textarea id="extraInstructions" rows="2" placeholder="e.g. Prefer the shortest correct answer. The course is biology 101."></textarea>
+        </label>
+
+        <div class="row">
+          <button id="btn-test" class="btn">Test connection</button>
+          <button id="btn-diagnose" class="btn btn-ghost" type="button">Run diagnostic</button>
+          <span id="test-result" class="test-result"></span>
+        </div>
+        <p class="field-note">
+          <strong>Run diagnostic</strong> sends a built-in sample quiz image through the exact
+          capture → analyze pipeline the shortcut uses and shows the parsed answer or the
+          provider's real error.
+        </p>
+
+        <details class="log" id="call-log">
+          <summary>Recent API calls <span id="log-count"></span></summary>
+          <pre id="log-body">No calls yet.</pre>
+          <button id="btn-log-clear" class="btn btn-ghost btn-small" type="button">Clear log</button>
+        </details>
+      </section>
+
+      <!-- ============================ Capture ============================ -->
+      <section class="card">
+        <h2><span class="num">02</span> Screenshot capture</h2>
+        <div class="grid">
+          <label class="field">
+            <span>Image format</span>
+            <select id="captureFormat">
+              <option value="jpeg">JPEG — smaller, faster to upload</option>
+              <option value="png">PNG — lossless, larger</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>JPEG quality <output id="jpegQualityOut">85%</output></span>
+            <input id="jpegQuality" type="range" min="30" max="100" step="5" />
+          </label>
+        </div>
+      </section>
+
+      <!-- ============================ Typing ============================ -->
+      <section class="card">
+        <h2><span class="num">03</span> Typing simulation</h2>
+        <p class="card-desc">
+          Answers are replayed as real keyboard events — <code>keydown → keypress →
+          beforeinput → input → keyup</code> — one character at a time, never pasted.
+        </p>
+        <div class="grid">
+          <label class="field">
+            <span>Delay per character <output id="typingDelayOut">60 ms</output></span>
+            <input id="typingDelayMs" type="range" min="15" max="300" step="5" />
+          </label>
+          <label class="field">
+            <span>Random jitter <output id="typingJitterOut">45 ms</output></span>
+            <input id="typingJitterMs" type="range" min="0" max="120" step="5" />
+          </label>
+        </div>
+
+        <div class="preview">
+          <div class="preview-head">
+            <span>Live preview</span>
+            <button id="btn-preview" class="btn btn-small" type="button">Replay</button>
+          </div>
+          <input id="preview-field" class="preview-input" type="text" readonly
+            placeholder="Press Replay to watch the configured cadence…" />
+        </div>
+      </section>
+
+      <!-- ============================ Behavior ============================ -->
+      <section class="card">
+        <h2><span class="num">04</span> Behavior</h2>
+        <div class="toggles">
+          <label class="toggle">
+            <input id="autoType" type="checkbox" />
+            <span class="toggle-ui"></span>
+            <span class="toggle-text">
+              <strong>Auto-type after analysis</strong>
+              <small>Skip the second shortcut — type as soon as the answer arrives.</small>
+            </span>
+          </label>
+          <label class="toggle">
+            <input id="clickChoice" type="checkbox" />
+            <span class="toggle-ui"></span>
+            <span class="toggle-text">
+              <strong>Click detected choices</strong>
+              <small>For multiple choice, click the matching option with real pointer events.</small>
+            </span>
+          </label>
+          <label class="toggle">
+            <input id="highlightMatches" type="checkbox" />
+            <span class="toggle-ui"></span>
+            <span class="toggle-text">
+              <strong>Highlight matches</strong>
+              <small>Outline the detected question, field and answer on the page.</small>
+            </span>
+          </label>
+        </div>
+        <label class="field">
+          <span>Overlay position</span>
+          <select id="overlayPosition">
+            <option value="top-right">Top right</option>
+            <option value="top-left">Top left</option>
+            <option value="bottom-right">Bottom right</option>
+            <option value="bottom-left">Bottom left</option>
+          </select>
+        </label>
+      </section>
+
+      <!-- ============================ Local files ============================ -->
+      <section class="card">
+        <h2><span class="num">05</span> Local files (file://)</h2>
+        <p class="card-desc">
+          QuizKey can capture local quiz files out of the box, but typing and the on-page
+          overlay need your permission for local files. Grant it here — one click, then
+          re-open (or reload) the file. Note: Chrome only shows its own
+          <code>"Allow access to file URLs"</code> toggle (under
+          <code>chrome://extensions → QuizKey → Details</code>) when the extension declares
+          URL permissions — if you don't see it, this button is the equivalent official path.
+        </p>
+        <div class="row">
+          <button id="btn-file-access" class="btn">Enable file access</button>
+          <span id="file-access-state" class="test-result">Checking…</span>
+        </div>
+      </section>
+
+      <!-- ============================ Shortcuts ============================ -->
+      <section class="card">
+        <h2><span class="num">06</span> Keyboard shortcuts</h2>
+        <p class="card-desc">
+          Record a new combination below. If the browser blocks in-extension rebinding,
+          open <code>chrome://extensions/shortcuts</code> and set them there instead.
+        </p>
+        <div class="shortcut-editor" id="shortcut-editor"></div>
+      </section>
+
+      <footer class="page-foot">
+        <p>
+          QuizKey stores everything locally and talks only to your configured AI endpoint.
+          Use it responsibly and respect the policies of the sites you run it on.
+        </p>
+      </footer>
+    </div>
+
+    <script type="module" src="options.js"></script>
+  </body>
+</html>
