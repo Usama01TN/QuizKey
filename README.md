@@ -58,6 +58,14 @@ Alt+A ─► service worker ─► stored result ─► content-script
 
 ---
 
+## Project website
+
+The `src/` folder is the Vite + React site deployed to GitHub Pages. It supports
+**dark / light mode**: the Sun/Moon button in the navigation bar switches themes,
+the choice is remembered in `localStorage` (`quizkey-theme`), and until you pick one
+the site follows your OS preference. All colors are CSS tokens in `src/index.css`
+(`:root` = dark, `html.light` = light), exposed to Tailwind via `@theme inline`.
+
 ## Installation (Chromium: Chrome, Edge, Brave, Arc…):
 
 1. Copy/download the `extension/` folder anywhere on disk.
