@@ -225,6 +225,7 @@ async function runCaptureAndAnalyze(tab) {
     detail: `${settings.model || "auto model"} · ${resolveApiStyle(settings)} API`,
     tone: "working",
     position: settings.overlayPosition,
+    theme: settings.theme,
   });
 
   let analysis;

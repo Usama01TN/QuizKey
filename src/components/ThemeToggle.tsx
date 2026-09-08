@@ -11,7 +11,7 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
       onClick={toggle}
       aria-label={label}
       title={label}
-      className={`relative grid h-9 w-9 place-items-center rounded-lg border border-line text-mist transition-colors hover:border-fg/25 hover:bg-fg/5 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid/60 ${className}`}
+      className={`relative grid h-9 w-9 cursor-pointer place-items-center rounded-lg border border-line text-mist transition-colors hover:border-fg/25 hover:bg-fg/5 hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid/60 ${className}`}
     >
       <Sun
         size={15}

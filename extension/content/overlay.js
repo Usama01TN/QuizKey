@@ -11,7 +11,15 @@
 
   const ROOT_ID = "quizkey-overlay-root";
   let position = "top-right";
+  let themeMode = "auto";
   let dismissTimer = null;
+
+  const lightQuery = window.matchMedia ? window.matchMedia("(prefers-color-scheme: light)") : null;
+  const resolveTheme = (mode) =>
+    mode === "dark" || mode === "light" ? mode : lightQuery && lightQuery.matches ? "light" : "dark";
+  lightQuery?.addEventListener?.("change", () => {
+    if (themeMode === "auto") document.getElementById(ROOT_ID)?.setAttribute("data-theme", resolveTheme(themeMode));
+  });
 
   function ensureRoot() {
     let root = document.getElementById(ROOT_ID);
@@ -19,6 +27,7 @@
       root = document.createElement("div");
       root.id = ROOT_ID;
       root.setAttribute("data-pos", position);
+      root.setAttribute("data-theme", resolveTheme(themeMode));
       document.documentElement.appendChild(root);
     }
     return root;
@@ -134,6 +143,11 @@
     setPosition: (pos) => {
       position = pos;
       document.getElementById(ROOT_ID)?.setAttribute("data-pos", pos);
+    },
+    /** @param {"auto"|"dark"|"light"} mode */
+    setTheme: (mode) => {
+      themeMode = mode || "auto";
+      document.getElementById(ROOT_ID)?.setAttribute("data-theme", resolveTheme(themeMode));
     },
   });
 })();

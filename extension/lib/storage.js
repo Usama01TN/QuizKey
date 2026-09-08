@@ -23,6 +23,7 @@
  * @property {boolean} clickChoice       Click detected choice answers
  * @property {string}  extraInstructions Free-form prompt suffix
  * @property {"top-right"|"top-left"|"bottom-right"|"bottom-left"} overlayPosition
+ * @property {"auto"|"dark"|"light"} theme  Appearance of the options page, popup and overlay
  */
 
 /** @type {QuizKeySettings} */
@@ -44,6 +45,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   clickChoice: true,
   extraInstructions: "",
   overlayPosition: "top-right",
+  theme: "auto",
 });
 
 const SETTINGS_KEY = "quizkey.settings";

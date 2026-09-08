@@ -25,6 +25,7 @@
   function rememberAnalysis(analysis, settings) {
     pendingAnswer = { analysis, settings };
     Overlay.setPosition(settings.overlayPosition || "top-right");
+    Overlay.setTheme(settings.theme || "auto");
 
     if (settings.highlightMatches) {
       const q = DOMDetector.findQuestionNode(analysis);
@@ -106,6 +107,7 @@
 
       case "QUIZKEY_SHOW_STATUS":
         Overlay.setPosition(message.position || "top-right");
+        if (message.theme) Overlay.setTheme(message.theme);
         Overlay.showStatus(message.headline, message.detail, message.tone || "working");
         sendResponse({ ok: true });
         return false;
@@ -119,6 +121,7 @@
         // Background pushed a stored result (e.g. popup re-opened).
         if (message.analysis && message.settings) {
           pendingAnswer = { analysis: message.analysis, settings: message.settings };
+          Overlay.setTheme(message.settings.theme || "auto");
           sendResponse({ ok: true });
         } else {
           sendResponse({ ok: false });
@@ -128,6 +131,7 @@
       case "QUIZKEY_TYPE_ANSWER":
         if (message.analysis && message.settings) {
           pendingAnswer = { analysis: message.analysis, settings: message.settings };
+          Overlay.setTheme(message.settings.theme || "auto");
         }
         sendResponse({ ok: true });
         void typePendingAnswer();

@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>QuizKey — Settings</title>
+    <script src="../lib/theme-boot.js"></script>
     <link rel="stylesheet" href="options.css" />
   </head>
   <body>
@@ -18,6 +19,10 @@
         </div>
         <div class="head-actions">
           <span id="save-state" class="save-state">All changes saved</span>
+          <button id="btn-theme" class="theme-toggle" type="button" aria-label="Switch theme" title="Switch theme">
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          </button>
           <button id="btn-reset" class="btn btn-ghost">Reset defaults</button>
         </div>
       </header>
@@ -186,6 +191,14 @@
             </span>
           </label>
         </div>
+        <label class="field">
+          <span>Appearance <em>(options page, popup and on-page overlay)</em></span>
+          <select id="theme">
+            <option value="auto">Follow system</option>
+            <option value="dark">Dark</option>
+            <option value="light">Light</option>
+          </select>
+        </label>
         <label class="field">
           <span>Overlay position</span>
           <select id="overlayPosition">

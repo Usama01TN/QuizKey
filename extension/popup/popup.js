@@ -5,6 +5,7 @@
  * keyboard shortcuts.
  */
 import { classifyPageAccess, hasFileUrlsPermission } from "../lib/page-access.js";
+import { initTheme } from "../lib/theme.js";
 
 (() => {
   "use strict";
@@ -187,6 +188,7 @@ import { classifyPageAccess, hasFileUrlsPermission } from "../lib/page-access.js
   els.btnType.addEventListener("click", () => void runAction("type"));
   els.btnOptions.addEventListener("click", () => chrome.runtime.openOptionsPage());
 
+  void initTheme({ toggle: $("#btn-theme") });
   void loadState();
   void renderShortcuts();
 })();

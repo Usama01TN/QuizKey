@@ -163,6 +163,7 @@ of the last requests (keys are never logged).
 | `highlightMatches` | boolean | `true` | Outline detected question/field/answer. |
 | `extraInstructions` | string | `""` | Appended to the analysis prompt. |
 | `overlayPosition` | string | `top-right` | Where the in-page panel appears. |
+| `theme` | `auto` \| `dark` \| `light` | `auto` | Appearance of the options page, popup and on-page overlay. The Sun/Moon button in the options/popup header flips it; `auto` follows the OS. |
 
 ## Typing realism:
 

@@ -23,6 +23,7 @@ import {
   clearCallLog,
 } from "../lib/ai-client.js";
 import { toUserMessage } from "../lib/errors.js";
+import { initTheme } from "../lib/theme.js";
 import {
   hasFileUrlsPermission,
   requestFileUrlsPermission,
@@ -73,6 +74,8 @@ const els = {
   overlayPosition: $("#overlayPosition"),
   shortcutEditor: $("#shortcut-editor"),
   btnFileAccess: $("#btn-file-access"),
+  btnTheme: $("#btn-theme"),
+  theme: $("#theme"),
   fileAccessState: $("#file-access-state"),
 };
 
@@ -150,6 +153,7 @@ async function hydrate() {
   els.clickChoice.checked = s.clickChoice;
   els.highlightMatches.checked = s.highlightMatches;
   els.overlayPosition.value = s.overlayPosition;
+  els.theme.value = s.theme || "auto";
   syncOutputs();
   detectPreset(s.provider || "custom");
   syncKeyHint();
@@ -223,6 +227,7 @@ function currentSnapshot() {
     clickChoice: els.clickChoice.checked,
     highlightMatches: els.highlightMatches.checked,
     overlayPosition: els.overlayPosition.value,
+    theme: els.theme.value,
   };
 }
 
@@ -678,6 +683,7 @@ function bind() {
   els.clickChoice.addEventListener("change", () => void persist({ clickChoice: els.clickChoice.checked }));
   els.highlightMatches.addEventListener("change", () => void persist({ highlightMatches: els.highlightMatches.checked }));
   els.overlayPosition.addEventListener("change", () => void persist({ overlayPosition: els.overlayPosition.value }));
+  els.theme.addEventListener("change", () => void themeCtl?.set(els.theme.value));
 
   els.btnReset.addEventListener("click", async () => {
     await resetSettings();
@@ -685,6 +691,16 @@ function bind() {
     markSaved();
   });
 }
+
+let themeCtl = null;
+void initTheme({
+  toggle: els.btnTheme,
+  onChange: (mode) => {
+    if (els.theme.value !== mode) els.theme.value = mode; // header toggle ↔ select stay in sync
+  },
+}).then((ctl) => {
+  themeCtl = ctl;
+});
 
 populateProviderSelect();
 void hydrate().then(refreshLog);
