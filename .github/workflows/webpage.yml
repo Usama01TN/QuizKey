@@ -23,12 +23,37 @@ jobs:
           node-version: 22
           cache: npm
 
-      - run: npm ci
-      - run: npm run build          # runs scripts/pack-extension.mjs → dist/quizkey-extension.zip
+      - name: Install
+        run: npm ci
+
+      - name: Build site
+        run: npm run build
+
+      - name: Package extension → dist/quizkey-extension.zip
+        run: |
+          rm -f dist/quizkey-extension.zip
+          zip -r -9 dist/quizkey-extension.zip extension \
+            -x "extension/**/.DS_Store" -x "extension/**/Thumbs.db"
+          ls -la dist/quizkey-extension.zip
+
+      - name: Point download links at the zip (relative to the page)
+        run: |
+          # Works whatever the source says: "/quizkey-extension.zip", "./…", or a full URL.
+          sed -i -E 's#(href[=:] ?")[^"]*quizkey-extension\.zip"#\1./quizkey-extension.zip"#g' dist/index.html
+          echo "links after rewrite:"
+          grep -o 'href[=:] \?"[^"]*quizkey-extension.zip"' dist/index.html | sort | uniq -c
+
+      - name: Verify
+        run: |
+          test -s dist/quizkey-extension.zip || { echo "::error::zip missing or empty"; exit 1; }
+          unzip -tq dist/quizkey-extension.zip
+          unzip -l dist/quizkey-extension.zip | grep -q "extension/manifest.json" || { echo "::error::manifest.json not in zip"; exit 1; }
+          grep -q '"./quizkey-extension.zip"' dist/index.html || { echo "::error::download link not found in index.html"; exit 1; }
+          echo "OK — zip and links verified"
 
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           publish_branch: gh-pages
-          force_orphan: true         # branch = exactly dist/, nothing stale left behind
+          force_orphan: true
