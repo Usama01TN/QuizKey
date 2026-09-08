@@ -80,7 +80,7 @@ export default function Docs() {
           <motion.div
             {...fade}
             transition={{ duration: 0.6 }}
-            className="rounded-3xl border border-white/[0.08] bg-panel p-7"
+            className="rounded-3xl border border-fg/[0.08] bg-panel p-7"
           >
             <div className="mb-7 flex items-center justify-between">
               <h3 className="flex items-center gap-2.5 text-lg font-bold">
@@ -88,7 +88,7 @@ export default function Docs() {
                 Installation
               </h3>
               <a
-                href="/quizkey-extension.zip"
+                href="./quizkey-extension.zip"
                 download
                 className="flex items-center gap-1.5 rounded-lg border border-acid/35 bg-acid/10 px-3 py-1.5 font-mono text-[11px] font-bold text-acid transition-colors hover:bg-acid/20"
               >
@@ -105,7 +105,7 @@ export default function Docs() {
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     {i < INSTALL_STEPS.length - 1 && (
-                      <span className="mt-1 w-px flex-1 bg-white/[0.07]" />
+                      <span className="mt-1 w-px flex-1 bg-fg/[0.07]" />
                     )}
                   </div>
                   <div className="min-w-0 pb-1">
@@ -113,8 +113,8 @@ export default function Docs() {
                       {step.title}
                     </p>
                     <p className="mt-1 text-[12.5px] leading-relaxed text-mist">{step.body}</p>
-                    <p className="mt-2.5 inline-flex max-w-full items-center gap-2 overflow-x-auto rounded-lg border border-white/[0.08] bg-[#0a0b11] px-3 py-2 font-mono text-[11px] text-acid-soft">
-                      <span className="text-[#565b6c]">$</span>
+                    <p className="mt-2.5 inline-flex max-w-full items-center gap-2 overflow-x-auto rounded-lg border border-fg/[0.08] bg-panel px-3 py-2 font-mono text-[11px] text-acid-soft">
+                      <span className="text-mist2">$</span>
                       <span className="whitespace-nowrap">{step.code}</span>
                     </p>
                   </div>
@@ -123,18 +123,18 @@ export default function Docs() {
             </div>
 
             <div className="mt-7 rounded-2xl border border-viol/25 bg-viol/[0.07] p-4">
-              <p className="flex items-center gap-2 text-[12.5px] font-bold text-[#b8b9fa]">
+              <p className="flex items-center gap-2 text-[12.5px] font-bold text-viol-soft">
                 <KeyRound size={13} />
                 First run
               </p>
               <p className="mt-1.5 text-[12.5px] leading-relaxed text-mist">
                 The options page opens automatically. Pick a provider preset, paste your API
-                key, hit <span className="text-white">Test connection</span>, and QuizKey
+                key, hit <span className="text-fg">Test connection</span>, and QuizKey
                 requests an optional host permission for that origin automatically.
               </p>
             </div>
 
-            <div className="mt-4 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4">
+            <div className="mt-4 rounded-2xl border border-fg/[0.07] bg-fg/[0.02] p-4">
               <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-mist">
                 Provider quick-configs
               </p>
@@ -149,8 +149,8 @@ export default function Docs() {
                   ["LM Studio · local", "localhost:1234/v1", "(empty → first loaded)", "Chat Completions"],
                   ["Ollama · local", "localhost:11434/v1", "llama3.2-vision", "Chat Completions"],
                 ].map(([name, url, model, badge]) => (
-                  <div key={name as string} className="flex flex-col gap-0.5 rounded-xl bg-[#0a0b11] px-3.5 py-2.5 sm:flex-row sm:items-center sm:justify-between">
-                    <span className="flex items-center gap-2 text-[12px] font-bold text-white/90">
+                  <div key={name as string} className="flex flex-col gap-0.5 rounded-xl bg-panel px-3.5 py-2.5 sm:flex-row sm:items-center sm:justify-between">
+                    <span className="flex items-center gap-2 text-[12px] font-bold text-fg/90">
                       {name as string}
                       {badge ? (
                         <span className="rounded-full bg-acid/15 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-acid">
@@ -171,19 +171,19 @@ export default function Docs() {
           <motion.div
             {...fade}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="overflow-hidden rounded-3xl border border-white/[0.08] bg-panel"
+            className="overflow-hidden rounded-3xl border border-fg/[0.08] bg-panel"
           >
-            <div className="flex items-center gap-2.5 border-b border-white/[0.07] px-7 py-5">
+            <div className="flex items-center gap-2.5 border-b border-fg/[0.07] px-7 py-5">
               <ListChecks size={16} className="text-acid" />
               <h3 className="text-lg font-bold">Settings reference</h3>
-              <span className="ml-auto font-mono text-[10.5px] text-[#565b6c]">
+              <span className="ml-auto font-mono text-[10.5px] text-mist2">
                 chrome.storage.local · quizkey.settings
               </span>
             </div>
             <div className="code-scroll max-h-[520px] overflow-y-auto">
               <table className="w-full text-left">
                 <thead className="sticky top-0 bg-panel">
-                  <tr className="border-b border-white/[0.07] font-mono text-[10px] uppercase tracking-[0.15em] text-[#565b6c]">
+                  <tr className="border-b border-fg/[0.07] font-mono text-[10px] uppercase tracking-[0.15em] text-mist2">
                     <th className="px-7 py-3 font-semibold">Key</th>
                     <th className="py-3 pr-4 font-semibold">Type</th>
                     <th className="py-3 pr-7 font-semibold">Default</th>
@@ -193,7 +193,7 @@ export default function Docs() {
                   {SETTINGS.map(([key, type, def]) => (
                     <tr
                       key={key}
-                      className="border-b border-white/[0.045] transition-colors hover:bg-white/[0.02]"
+                      className="border-b border-fg/[0.045] transition-colors hover:bg-fg/[0.02]"
                     >
                       <td className="px-7 py-2.5 font-mono text-[12px] font-semibold text-acid-soft">
                         {key}
@@ -214,7 +214,7 @@ export default function Docs() {
         <motion.div
           {...fade}
           transition={{ duration: 0.6, delay: 0.15 }}
-          className="mt-6 grid gap-6 rounded-3xl border border-white/[0.08] bg-panel p-7 sm:grid-cols-2 xl:grid-cols-4"
+          className="mt-6 grid gap-6 rounded-3xl border border-fg/[0.08] bg-panel p-7 sm:grid-cols-2 xl:grid-cols-4"
         >
           {[
             [

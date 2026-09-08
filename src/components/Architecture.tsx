@@ -33,8 +33,8 @@ const LANES = [
       ["storage.onChanged", "live settings sync"],
       ["permissions.request", "optional custom endpoints"],
     ],
-    accent: "text-white/70",
-    border: "hover:border-white/25",
+    accent: "text-fg/70",
+    border: "hover:border-fg/25",
   },
   {
     icon: MousePointerClick,
@@ -106,10 +106,10 @@ export default function Architecture() {
               <motion.div
                 {...fade}
                 transition={{ duration: 0.6, delay: li * 0.1 }}
-                className={`flex-1 rounded-3xl border border-white/[0.08] bg-panel p-6 transition-colors ${lane.border}`}
+                className={`flex-1 rounded-3xl border border-fg/[0.08] bg-panel p-6 transition-colors ${lane.border}`}
               >
                 <div className="mb-5 flex items-center gap-3">
-                  <span className={`grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/[0.04] ${lane.accent}`}>
+                  <span className={`grid h-10 w-10 place-items-center rounded-xl border border-fg/10 bg-fg/[0.04] ${lane.accent}`}>
                     <lane.icon size={18} />
                   </span>
                   <div>
@@ -119,8 +119,8 @@ export default function Architecture() {
                 </div>
                 <div className="space-y-1.5">
                   {lane.modules.map(([name, desc]) => (
-                    <div key={name} className="rounded-xl bg-white/[0.03] px-3.5 py-2.5">
-                      <p className="font-mono text-[11px] font-semibold text-white/90">{name}</p>
+                    <div key={name} className="rounded-xl bg-fg/[0.03] px-3.5 py-2.5">
+                      <p className="font-mono text-[11px] font-semibold text-fg/90">{name}</p>
                       <p className="mt-0.5 text-[11px] text-mist">{desc}</p>
                     </div>
                   ))}
@@ -143,9 +143,9 @@ export default function Architecture() {
         <motion.div
           {...fade}
           transition={{ duration: 0.6, delay: 0.15 }}
-          className="mt-6 overflow-hidden rounded-3xl border border-white/[0.08] bg-panel"
+          className="mt-6 overflow-hidden rounded-3xl border border-fg/[0.08] bg-panel"
         >
-          <div className="flex items-center gap-2.5 border-b border-white/[0.07] px-6 py-3.5">
+          <div className="flex items-center gap-2.5 border-b border-fg/[0.07] px-6 py-3.5">
             <Boxes size={14} className="text-acid" />
             <span className="font-mono text-[10.5px] uppercase tracking-[0.2em] text-mist">
               One full cycle as messages
@@ -159,8 +159,8 @@ export default function Architecture() {
                     step.startsWith("Alt")
                       ? "border-acid/40 bg-acid/10 font-bold text-acid"
                       : step.includes("()")
-                        ? "border-viol/30 bg-viol/10 text-[#b8b9fa]"
-                        : "border-white/10 bg-white/[0.03] text-white/80"
+                        ? "border-viol/30 bg-viol/10 text-viol-soft"
+                        : "border-fg/10 bg-fg/[0.03] text-fg/80"
                   }`}
                 >
                   {step}
@@ -175,9 +175,9 @@ export default function Architecture() {
         <motion.div
           {...fade}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-6 rounded-3xl border border-white/[0.08] bg-panel"
+          className="mt-6 rounded-3xl border border-fg/[0.08] bg-panel"
         >
-          <div className="flex items-center gap-2.5 border-b border-white/[0.07] px-6 py-3.5">
+          <div className="flex items-center gap-2.5 border-b border-fg/[0.07] px-6 py-3.5">
             <FileCode2 size={14} className="text-acid" />
             <span className="font-mono text-[10.5px] uppercase tracking-[0.2em] text-mist">
               Every file, one responsibility
@@ -189,7 +189,7 @@ export default function Architecture() {
                 key={file}
                 className={`flex flex-col gap-1 px-6 py-4 sm:flex-row sm:items-baseline sm:gap-4 ${
                   i % 2 === 0 ? "md:border-r" : ""
-                } border-b border-white/[0.05]`}
+                } border-b border-fg/[0.05]`}
               >
                 <span className="shrink-0 font-mono text-[11.5px] font-semibold text-acid-soft sm:w-56">
                   {file}

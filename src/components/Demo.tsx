@@ -209,14 +209,14 @@ export default function Demo() {
           <p className="mt-4 text-[15px] leading-relaxed text-mist">
             A faithful in-page replay of the extension's flow on a mock quiz. Tune the
             cadence, toggle auto-type, or hide the input field to see how errors surface —
-            then fire it with <kbd className="rounded border border-white/15 bg-white/5 px-1.5 font-mono text-[11px] text-acid">Alt</kbd>+<kbd className="rounded border border-white/15 bg-white/5 px-1.5 font-mono text-[11px] text-acid">Q</kbd>.
+            then fire it with <kbd className="rounded border border-fg/15 bg-fg/5 px-1.5 font-mono text-[11px] text-acid">Alt</kbd>+<kbd className="rounded border border-fg/15 bg-fg/5 px-1.5 font-mono text-[11px] text-acid">Q</kbd>.
           </p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[370px,1fr]">
           {/* ------------------------- control deck ------------------------- */}
           <div className="flex flex-col gap-4">
-            <div className="rounded-3xl border border-white/[0.08] bg-panel p-6">
+            <div className="rounded-3xl border border-fg/[0.08] bg-panel p-6">
               <div className="mb-5 flex items-center justify-between">
                 <span className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-mist">
                   Pipeline config
@@ -229,7 +229,7 @@ export default function Demo() {
               <button
                 onClick={run}
                 disabled={running}
-                className="group mb-6 flex h-12 w-full items-center justify-center gap-2.5 rounded-xl bg-acid text-[14px] font-bold text-[#0c0e04] transition-all enabled:hover:brightness-110 enabled:hover:shadow-[0_0_36px_rgba(180,240,60,0.4)] disabled:cursor-not-allowed disabled:opacity-40"
+                className="group mb-6 flex h-12 w-full items-center justify-center gap-2.5 rounded-xl bg-acid text-[14px] font-bold text-on-acid transition-all enabled:hover:brightness-110 enabled:hover:shadow-[0_0_36px_rgba(180,240,60,0.4)] disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {running ? (
                   <Loader2 size={16} className="animate-spin" />
@@ -237,7 +237,7 @@ export default function Demo() {
                   <Play size={15} strokeWidth={2.5} />
                 )}
                 {running ? "Running…" : "Capture & analyze"}
-                <kbd className="rounded-md border border-black/20 bg-black/10 px-1.5 py-0.5 font-mono text-[10px]">
+                <kbd className="rounded-md border border-[var(--shade)] bg-[var(--shade)] px-1.5 py-0.5 font-mono text-[10px]">
                   ⌥Q
                 </kbd>
               </button>
@@ -245,7 +245,7 @@ export default function Demo() {
               <div className="space-y-5">
                 <div>
                   <div className="mb-2 flex justify-between text-[12px]">
-                    <span className="font-medium text-white/80">Delay per character</span>
+                    <span className="font-medium text-fg/80">Delay per character</span>
                     <span className="font-mono text-acid">{delay} ms</span>
                   </div>
                   <input
@@ -261,7 +261,7 @@ export default function Demo() {
                 </div>
                 <div>
                   <div className="mb-2 flex justify-between text-[12px]">
-                    <span className="font-medium text-white/80">Human jitter</span>
+                    <span className="font-medium text-fg/80">Human jitter</span>
                     <span className="font-mono text-acid">± {jitter} ms</span>
                   </div>
                   <input
@@ -276,20 +276,20 @@ export default function Demo() {
                   />
                 </div>
 
-                <label className="flex cursor-pointer items-center justify-between rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-3">
-                  <span className="text-[12.5px] font-medium text-white/85">
+                <label className="flex cursor-pointer items-center justify-between rounded-xl border border-fg/[0.07] bg-fg/[0.03] px-4 py-3">
+                  <span className="text-[12.5px] font-medium text-fg/85">
                     Auto-type after analysis
                   </span>
                   <input
                     type="checkbox"
                     checked={autoType}
                     onChange={(e) => setAutoType(e.target.checked)}
-                    className="h-4 w-4 accent-[#b4f03c]"
+                    className="h-4 w-4 accent-acid"
                   />
                 </label>
 
-                <label className="flex cursor-pointer items-center justify-between rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-3">
-                  <span className="text-[12.5px] font-medium text-white/85">
+                <label className="flex cursor-pointer items-center justify-between rounded-xl border border-fg/[0.07] bg-fg/[0.03] px-4 py-3">
+                  <span className="text-[12.5px] font-medium text-fg/85">
                     Hide input field{" "}
                     <span className="text-mist">(error path)</span>
                   </span>
@@ -298,14 +298,14 @@ export default function Demo() {
                     checked={hideInput}
                     disabled={running}
                     onChange={(e) => setHideInput(e.target.checked)}
-                    className="h-4 w-4 accent-[#b4f03c]"
+                    className="h-4 w-4 accent-acid"
                   />
                 </label>
               </div>
             </div>
 
             {/* stepper */}
-            <div className="rounded-3xl border border-white/[0.08] bg-panel p-5">
+            <div className="rounded-3xl border border-fg/[0.08] bg-panel p-5">
               {STEPS.map((step, i) => {
                 const done = activeStep > i || phase === "done";
                 const active = activeStep === i && running;
@@ -321,7 +321,7 @@ export default function Demo() {
                               ? "border-acid/50 bg-acid/10 text-acid"
                               : active
                                 ? "border-acid/40 bg-acid/[0.06] text-acid shadow-[0_0_18px_rgba(180,240,60,0.2)]"
-                                : "border-white/[0.08] bg-white/[0.02] text-mist"
+                                : "border-fg/[0.08] bg-fg/[0.02] text-mist"
                         }`}
                       >
                         {done && !failed ? (
@@ -337,7 +337,7 @@ export default function Demo() {
                       {i < STEPS.length - 1 && (
                         <div
                           className={`my-1 w-px flex-1 transition-colors duration-300 ${
-                            activeStep > i ? "bg-acid/40" : "bg-white/[0.07]"
+                            activeStep > i ? "bg-acid/40" : "bg-fg/[0.07]"
                           }`}
                         />
                       )}
@@ -345,12 +345,12 @@ export default function Demo() {
                     <div className="pb-5 pt-1.5">
                       <p
                         className={`text-[13px] font-semibold leading-tight transition-colors ${
-                          done || active ? "text-white" : "text-mist"
+                          done || active ? "text-fg" : "text-mist"
                         }`}
                       >
                         {step.label}
                       </p>
-                      <p className="mt-0.5 font-mono text-[10.5px] text-[#565b6c]">{step.sub}</p>
+                      <p className="mt-0.5 font-mono text-[10.5px] text-mist2">{step.sub}</p>
                     </div>
                   </div>
                 );
@@ -359,15 +359,15 @@ export default function Demo() {
           </div>
 
           {/* --------------------------- mock browser --------------------------- */}
-          <div className="overflow-hidden rounded-3xl border border-white/[0.08] bg-[#0b0c12] shadow-[0_40px_120px_rgba(0,0,0,0.45)]">
+          <div className="overflow-hidden rounded-3xl border border-fg/[0.08] bg-panel shadow-[0_40px_120px_var(--shade-lg)]">
             {/* chrome */}
-            <div className="flex items-center gap-3 border-b border-white/[0.07] bg-[#11121a] px-5 py-3">
+            <div className="flex items-center gap-3 border-b border-fg/[0.07] bg-panel2 px-5 py-3">
               <span className="flex gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-[#3a3d4a]" />
-                <span className="h-2.5 w-2.5 rounded-full bg-[#3a3d4a]" />
-                <span className="h-2.5 w-2.5 rounded-full bg-[#3a3d4a]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-line2" />
+                <span className="h-2.5 w-2.5 rounded-full bg-line2" />
+                <span className="h-2.5 w-2.5 rounded-full bg-line2" />
               </span>
-              <span className="mx-auto flex w-full max-w-md items-center gap-2 rounded-lg bg-[#0a0b11] px-3.5 py-1.5 font-mono text-[11px] text-mist">
+              <span className="mx-auto flex w-full max-w-md items-center gap-2 rounded-lg bg-panel px-3.5 py-1.5 font-mono text-[11px] text-mist">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
                 learn.university.edu/quiz/astronomy-101
               </span>
@@ -391,7 +391,7 @@ export default function Demo() {
                     transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
                     className="pointer-events-none absolute left-0 top-0 z-40 -translate-x-1 -translate-y-1"
                   >
-                    <MousePointer2 size={20} className="fill-acid text-[#0c0e04] drop-shadow-[0_0_12px_rgba(180,240,60,0.7)]" />
+                    <MousePointer2 size={20} className="fill-acid text-on-acid drop-shadow-[0_0_12px_rgba(180,240,60,0.7)]" />
                     {cursor.click && (
                       <span className="absolute -left-2 -top-2 h-9 w-9 animate-ping rounded-full border-2 border-acid/70" />
                     )}
@@ -409,7 +409,7 @@ export default function Demo() {
                   className={`rounded-2xl border p-6 transition-all duration-500 ${
                     highlightQ
                       ? "border-viol/60 shadow-[0_0_0_3px_rgba(139,140,248,0.15)]"
-                      : "border-white/[0.08]"
+                      : "border-fg/[0.08]"
                   } bg-panel`}
                 >
                   <h3 className="text-[19px] font-semibold leading-snug">
@@ -432,17 +432,17 @@ export default function Demo() {
                           tabIndex={-1}
                           className={`flex items-center gap-3.5 rounded-xl border px-4 py-3 text-left text-[14px] transition-all duration-500 ${
                             chosen
-                              ? "border-acid bg-acid/10 text-white shadow-[0_0_24px_rgba(180,240,60,0.18)]"
+                              ? "border-acid bg-acid/10 text-fg shadow-[0_0_24px_rgba(180,240,60,0.18)]"
                               : hinted
-                                ? "border-acid/50 bg-acid/[0.05] text-white"
-                                : "border-white/[0.09] bg-white/[0.02] text-white/75"
+                                ? "border-acid/50 bg-acid/[0.05] text-fg"
+                                : "border-fg/[0.09] bg-fg/[0.02] text-fg/75"
                           }`}
                         >
                           <span
                             className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg border font-mono text-[11px] font-bold transition-colors duration-500 ${
                               chosen || hinted
                                 ? "border-acid/60 bg-acid/15 text-acid"
-                                : "border-white/15 text-mist"
+                                : "border-fg/15 text-mist"
                             }`}
                           >
                             {id}
@@ -475,16 +475,16 @@ export default function Demo() {
                           Your answer
                         </label>
                         <div
-                          className={`flex items-center rounded-xl border bg-[#0a0b11] px-4 py-3 font-mono text-[14px] transition-all duration-300 ${
+                          className={`flex items-center rounded-xl border bg-panel px-4 py-3 font-mono text-[14px] transition-all duration-300 ${
                             phase === "acting" || phase === "done"
                               ? "border-acid/50 shadow-[0_0_0_3px_rgba(180,240,60,0.1)]"
-                              : "border-white/15"
+                              : "border-fg/15"
                           }`}
                         >
                           {typed ? (
-                            <span className="text-white">{typed}</span>
+                            <span className="text-fg">{typed}</span>
                           ) : (
-                            <span className="text-[#4b5060]">Type here…</span>
+                            <span className="text-mist2">Type here…</span>
                           )}
                           {(phase === "acting" || phase === "done") && !clickedOptionErrorGuard(phase, typed) && (
                             <span className="caret-blink ml-0.5 inline-block h-4 w-[7px] bg-acid" />
@@ -503,7 +503,7 @@ export default function Demo() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
-                    className="absolute bottom-6 left-6 z-20 hidden w-[330px] rounded-2xl border border-white/[0.09] bg-[#101118]/95 p-4 font-mono text-[10.5px] leading-relaxed text-[#9aa0b0] shadow-2xl md:block"
+                    className="absolute bottom-6 left-6 z-20 hidden w-[330px] rounded-2xl border border-fg/[0.09] bg-panel2/95 p-4 font-mono text-[10.5px] leading-relaxed text-mist shadow-2xl md:block"
                   >
                     <p className="mb-2 flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-viol">
                       <BrainCircuit size={12} /> model response · streamed
@@ -531,12 +531,12 @@ export default function Demo() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -8 }}
                     transition={{ type: "spring", stiffness: 350, damping: 28 }}
-                    className="absolute right-4 top-4 z-30 w-[290px] rounded-2xl border border-white/[0.11] bg-[#101117]/95 p-4 shadow-[0_24px_60px_rgba(0,0,0,0.55)] backdrop-blur-xl"
+                    className="absolute right-4 top-4 z-30 w-[290px] rounded-2xl border border-fg/[0.11] bg-panel2/95 p-4 shadow-[0_24px_60px_var(--shade-lg)] backdrop-blur-xl"
                   >
                     <p className="mb-2 font-mono text-[9.5px] font-bold uppercase tracking-[0.2em] text-acid">
                       QuizKey · Question detected
                     </p>
-                    <p className="line-clamp-2 text-[12.5px] font-semibold leading-snug text-white/90">
+                    <p className="line-clamp-2 text-[12.5px] font-semibold leading-snug text-fg/90">
                       Which planet in our solar system currently has the most confirmed moons?
                     </p>
                     <div className="mt-3 rounded-xl border border-acid/30 bg-acid/[0.08] px-3 py-2.5">
@@ -546,7 +546,7 @@ export default function Demo() {
                       <p className="text-[13.5px] font-bold text-acid-soft">C — Saturn</p>
                     </div>
                     <div className="mt-3 flex items-center gap-2.5">
-                      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">
+                      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-fg/10">
                         <motion.div
                           initial={{ width: 0 }}
                           animate={{ width: phase === "acting" || phase === "done" ? `${Math.round((progress / ANSWER.length) * 100)}%` : "97%" }}
@@ -564,11 +564,11 @@ export default function Demo() {
                     {phase === "decided" && !settingsRef.current.autoType && (
                       <button
                         onClick={startActing}
-                        className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-acid py-2 text-[12px] font-bold text-[#0c0e04] transition hover:brightness-110"
+                        className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-acid py-2 text-[12px] font-bold text-on-acid transition hover:brightness-110"
                       >
                         <Keyboard size={13} />
                         Type answer
-                        <kbd className="rounded border border-black/20 bg-black/10 px-1 font-mono text-[9.5px]">⌥A</kbd>
+                        <kbd className="rounded border border-[var(--shade)] bg-[var(--shade)] px-1 font-mono text-[9.5px]">⌥A</kbd>
                       </button>
                     )}
                     {phase === "done" && (
@@ -588,16 +588,16 @@ export default function Demo() {
                     animate={{ opacity: 1, y: 0, x: 0 }}
                     exit={{ opacity: 0 }}
                     transition={{ type: "spring", stiffness: 380, damping: 26 }}
-                    className="absolute right-4 top-4 z-30 flex w-[320px] gap-3 rounded-2xl border border-white/[0.11] bg-[#101117]/95 p-4 shadow-2xl backdrop-blur-xl"
+                    className="absolute right-4 top-4 z-30 flex w-[320px] gap-3 rounded-2xl border border-fg/[0.11] bg-panel2/95 p-4 shadow-2xl backdrop-blur-xl"
                   >
                     <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-red-400/15 text-red-400">
                       <X size={14} strokeWidth={3} />
                     </span>
                     <div>
-                      <p className="text-[12.5px] font-bold text-white">NO_INPUT — handled gracefully</p>
+                      <p className="text-[12.5px] font-bold text-fg">NO_INPUT — handled gracefully</p>
                       <p className="mt-1 text-[11.5px] leading-relaxed text-mist">
                         No visible, editable field on this page. Focus the field and press{" "}
-                        <kbd className="rounded border border-white/15 bg-white/5 px-1 font-mono text-[9.5px] text-acid">⌥A</kbd>{" "}
+                        <kbd className="rounded border border-fg/15 bg-fg/5 px-1 font-mono text-[9.5px] text-acid">⌥A</kbd>{" "}
                         again — the answer stays pinned in the overlay.
                       </p>
                     </div>
@@ -609,7 +609,7 @@ export default function Demo() {
         </div>
 
         {/* under-controls */}
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/[0.07] bg-panel px-5 py-4">
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-fg/[0.07] bg-panel px-5 py-4">
           <p className="font-mono text-[11px] text-mist">
             {phase === "idle" && "status: idle — press run or Alt+Q"}
             {phase === "capturing" && "status: capturing frame…"}
@@ -622,7 +622,7 @@ export default function Demo() {
           </p>
           <button
             onClick={reset}
-            className="flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-[12px] font-semibold text-mist transition-colors hover:border-white/25 hover:text-white"
+            className="flex items-center gap-2 rounded-lg border border-fg/10 px-4 py-2 text-[12px] font-semibold text-mist transition-colors hover:border-fg/25 hover:text-fg"
           >
             <RotateCcw size={13} />
             Reset demo

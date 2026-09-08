@@ -98,15 +98,15 @@ export default function SourceExplorer() {
             <p className="mt-4 text-[15px] leading-relaxed text-mist">
               The explorer below renders the actual files that ship inside the extension —
               no excerpts, no placeholders. Use{" "}
-              <kbd className="rounded border border-white/15 bg-white/5 px-1.5 font-mono text-[11px] text-acid">↑</kbd>{" "}
-              <kbd className="rounded border border-white/15 bg-white/5 px-1.5 font-mono text-[11px] text-acid">↓</kbd>{" "}
+              <kbd className="rounded border border-fg/15 bg-fg/5 px-1.5 font-mono text-[11px] text-acid">↑</kbd>{" "}
+              <kbd className="rounded border border-fg/15 bg-fg/5 px-1.5 font-mono text-[11px] text-acid">↓</kbd>{" "}
               in the tree to move between files.
             </p>
           </div>
           <a
-            href="/quizkey-extension.zip"
+            href="./quizkey-extension.zip"
             download
-            className="flex h-11 items-center gap-2 rounded-xl bg-acid px-5 text-[13px] font-bold text-[#0c0e04] transition-all hover:brightness-110 hover:shadow-[0_0_32px_rgba(180,240,60,0.4)]"
+            className="flex h-11 items-center gap-2 rounded-xl bg-acid px-5 text-[13px] font-bold text-on-acid transition-all hover:brightness-110 hover:shadow-[0_0_32px_rgba(180,240,60,0.4)]"
           >
             <Download size={15} strokeWidth={2.5} />
             quizkey-extension.zip
@@ -118,19 +118,19 @@ export default function SourceExplorer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7 }}
-          className="overflow-hidden rounded-3xl border border-white/[0.09] bg-[#0a0b11] shadow-[0_40px_120px_rgba(0,0,0,0.5)]"
+          className="overflow-hidden rounded-3xl border border-fg/[0.09] bg-panel shadow-[0_40px_120px_var(--shade-lg)]"
         >
           {/* window bar */}
-          <div className="flex items-center justify-between border-b border-white/[0.07] bg-[#101118] px-5 py-3">
+          <div className="flex items-center justify-between border-b border-fg/[0.07] bg-panel2 px-5 py-3">
             <span className="flex items-center gap-3">
               <span className="flex gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-[#3a3d4a]" />
-                <span className="h-2.5 w-2.5 rounded-full bg-[#3a3d4a]" />
-                <span className="h-2.5 w-2.5 rounded-full bg-[#3a3d4a]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-line2" />
+                <span className="h-2.5 w-2.5 rounded-full bg-line2" />
+                <span className="h-2.5 w-2.5 rounded-full bg-line2" />
               </span>
               <span className="font-mono text-[11px] text-mist">~/quizkey/extension</span>
             </span>
-            <span className="hidden font-mono text-[10.5px] text-[#565b6c] sm:block">
+            <span className="hidden font-mono text-[10.5px] text-mist2 sm:block">
               {SOURCE_FILES.length} files · Manifest V3
             </span>
           </div>
@@ -141,13 +141,13 @@ export default function SourceExplorer() {
               ref={treeRef}
               tabIndex={0}
               onKeyDown={onTreeKey}
-              className="code-scroll shrink-0 overflow-x-auto border-b border-white/[0.07] bg-[#0c0d13] p-3 outline-none focus-visible:ring-1 focus-visible:ring-acid/40 md:w-72 md:overflow-y-auto md:border-b-0 md:border-r"
+              className="code-scroll shrink-0 overflow-x-auto border-b border-fg/[0.07] bg-panel p-3 outline-none focus-visible:ring-1 focus-visible:ring-acid/40 md:w-72 md:overflow-y-auto md:border-b-0 md:border-r"
             >
               <div className="flex gap-1 md:block md:space-y-3">
                 {groups.map((group) => (
                   <div key={group.folder ?? "root"} className="shrink-0 md:shrink">
                     {group.folder && (
-                      <p className="mb-1 hidden items-center gap-1.5 px-2 font-mono text-[10.5px] font-semibold uppercase tracking-wider text-[#565b6c] md:flex">
+                      <p className="mb-1 hidden items-center gap-1.5 px-2 font-mono text-[10.5px] font-semibold uppercase tracking-wider text-mist2 md:flex">
                         <Folder size={11} className="text-acid/60" />
                         {group.folder}/
                       </p>
@@ -166,7 +166,7 @@ export default function SourceExplorer() {
                             className={`flex w-full items-center gap-2 whitespace-nowrap rounded-lg px-2.5 py-1.5 font-mono text-[11.5px] transition-colors ${group.folder ? "md:pl-6" : ""} ${
                               isActive
                                 ? "bg-acid/10 text-acid"
-                                : "text-[#8b90a0] hover:bg-white/[0.04] hover:text-white"
+                                : "text-mist hover:bg-fg/[0.04] hover:text-fg"
                             }`}
                           >
                             <Icon size={12.5} className={isActive ? "text-acid" : LANG_COLOR[f.lang]} />
@@ -179,27 +179,27 @@ export default function SourceExplorer() {
                 ))}
               </div>
 
-              <pre className="mt-4 hidden border-t border-white/[0.06] px-2 pt-4 font-mono text-[10px] leading-relaxed text-[#41454f] md:block">
+              <pre className="mt-4 hidden border-t border-fg/[0.06] px-2 pt-4 font-mono text-[10px] leading-relaxed text-mist2 md:block">
                 {PROJECT_TREE}
               </pre>
             </div>
 
             {/* ------------------------------ code ------------------------------ */}
             <div className="flex min-w-0 flex-1 flex-col">
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.07] bg-[#0c0d13] px-5 py-3">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-fg/[0.07] bg-panel px-5 py-3">
                 <span className="flex items-center gap-2.5 font-mono text-[11.5px]">
-                  <span className="text-white/90">{file.path}</span>
-                  <span className={`rounded border border-white/10 bg-white/[0.04] px-1.5 py-0.5 text-[9.5px] font-bold uppercase tracking-wider ${LANG_COLOR[file.lang]}`}>
+                  <span className="text-fg/90">{file.path}</span>
+                  <span className={`rounded border border-fg/10 bg-fg/[0.04] px-1.5 py-0.5 text-[9.5px] font-bold uppercase tracking-wider ${LANG_COLOR[file.lang]}`}>
                     {file.lang}
                   </span>
                 </span>
                 <span className="flex items-center gap-3">
-                  <span className="font-mono text-[10.5px] text-[#565b6c]">
+                  <span className="font-mono text-[10.5px] text-mist2">
                     {lines} lines · {sizeKb} KB
                   </span>
                   <button
                     onClick={copy}
-                    className="flex items-center gap-1.5 rounded-lg border border-white/10 px-2.5 py-1.5 font-mono text-[10.5px] text-mist transition-colors hover:border-acid/40 hover:text-acid"
+                    className="flex items-center gap-1.5 rounded-lg border border-fg/10 px-2.5 py-1.5 font-mono text-[10.5px] text-mist transition-colors hover:border-acid/40 hover:text-acid"
                   >
                     {copied ? <Check size={12} className="text-acid" /> : <Copy size={12} />}
                     {copied ? "copied" : "copy"}

@@ -45,7 +45,7 @@ function Card({
     <motion.div
       {...fade}
       transition={{ duration: 0.6, delay }}
-      className={`group relative overflow-hidden rounded-3xl border border-white/[0.08] bg-panel p-7 transition-colors hover:border-white/[0.16] ${className}`}
+      className={`group relative overflow-hidden rounded-3xl border border-fg/[0.08] bg-panel p-7 transition-colors hover:border-fg/[0.16] ${className}`}
     >
       {children}
     </motion.div>
@@ -86,7 +86,7 @@ export default function Features() {
             <div className="mt-6 flex flex-wrap items-center gap-1.5">
               {EVENT_CHAIN.map((ev, i) => (
                 <span key={ev} className="flex items-center gap-1.5">
-                  <span className="rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 font-mono text-[11px] text-white/85 transition-colors group-hover:border-acid/30">
+                  <span className="rounded-lg border border-fg/10 bg-fg/[0.04] px-3 py-1.5 font-mono text-[11px] text-fg/85 transition-colors group-hover:border-acid/30">
                     {ev}
                   </span>
                   {i < EVENT_CHAIN.length - 1 && (
@@ -110,7 +110,7 @@ export default function Features() {
             </p>
             <div className="mt-6 space-y-1.5 font-mono text-[11px]">
               <p className="text-viol">"inputKind": "choice"</p>
-              <p className="text-white/70">"correctAnswerId": "C"</p>
+              <p className="text-fg/70">"correctAnswerId": "C"</p>
               <p className="text-acid">"confidence": 0.97</p>
             </div>
           </Card>
@@ -131,7 +131,7 @@ export default function Features() {
                   whileInView={{ height: `${h}%` }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.03 * i }}
-                  className={`w-full rounded-sm ${i === 8 ? "bg-acid" : "bg-white/15"}`}
+                  className={`w-full rounded-sm ${i === 8 ? "bg-acid" : "bg-fg/15"}`}
                 />
               ))}
             </div>
@@ -152,7 +152,7 @@ export default function Features() {
               {["Alt+Q", "Alt+A", "60ms ±45", "jpeg:85", "gpt-4o-mini", "auto-type"].map((chip) => (
                 <span
                   key={chip}
-                  className="rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1 font-mono text-[10.5px] text-white/75"
+                  className="rounded-md border border-fg/10 bg-fg/[0.04] px-2.5 py-1 font-mono text-[10.5px] text-fg/75"
                 >
                   {chip}
                 </span>
@@ -172,7 +172,7 @@ export default function Features() {
               {ERROR_CODES.map(([code, act]) => (
                 <div
                   key={code}
-                  className="flex items-center justify-between rounded-lg bg-white/[0.03] px-3 py-1.5 font-mono text-[10.5px]"
+                  className="flex items-center justify-between rounded-lg bg-fg/[0.03] px-3 py-1.5 font-mono text-[10.5px]"
                 >
                   <span className="text-red-300/90">{code}</span>
                   <span className="text-mist">{act}</span>
@@ -194,7 +194,7 @@ export default function Features() {
               {PERMISSIONS.map(([perm, why]) => (
                 <div
                   key={perm}
-                  className="flex items-center justify-between rounded-lg bg-white/[0.03] px-3 py-1.5 font-mono text-[10.5px]"
+                  className="flex items-center justify-between rounded-lg bg-fg/[0.03] px-3 py-1.5 font-mono text-[10.5px]"
                 >
                   <span className="text-acid">{perm}</span>
                   <span className="text-right text-mist">{why}</span>

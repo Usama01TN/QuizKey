@@ -137,9 +137,9 @@ export const CodeBlock = memo(function CodeBlock({
   return (
     <pre className="font-mono text-[12.5px] leading-[1.7]">
       {lines.map((line, i) => (
-        <div key={i} className="flex px-4 hover:bg-white/[0.025]">
+        <div key={i} className="flex px-4 hover:bg-fg/[0.025]">
           {showLineNumbers && (
-            <span className="sticky left-0 w-8 shrink-0 select-none pr-4 text-right text-[#41454f]">
+            <span className="sticky left-0 w-8 shrink-0 select-none pr-4 text-right text-[var(--mist2)]">
               {i + 1}
             </span>
           )}

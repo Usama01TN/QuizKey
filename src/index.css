@@ -1,16 +1,85 @@
 @import "tailwindcss";
 
-@theme {
+/* ==========================================================================
+   Theme tokens — dark is the default, `html.light` flips every surface/text
+   color. Tailwind utilities (bg-panel, text-fg/70, border-line …) read these
+   through @theme inline, so components never hard-code a hex again.
+   ========================================================================== */
+:root {
+  color-scheme: dark;
+  --ink: #07070c;        /* page background            */
+  --panel: #0a0b11;      /* cards, code, nav           */
+  --panel2: #12131d;     /* nested surfaces            */
+  --panel3: #23252f;     /* raised chips, scrollbars   */
+  --line: rgba(255, 255, 255, 0.10);
+  --line2: #3a3d4a;      /* solid hairlines            */
+  --fg: #ececf1;         /* primary text               */
+  --mist: #9ca0ae;       /* secondary text             */
+  --mist2: #565b6c;      /* tertiary / placeholders    */
+  --acid: #b4f03c;       /* brand lime                 */
+  --acid-soft: #d6f88a;
+  --on-acid: #0c0e04;    /* text on lime surfaces      */
+  --viol: #8b8cf8;
+  --viol-soft: #b8b9fa;
+  --sky: #93c5fd;
+  --grid: rgba(255, 255, 255, 0.035);
+  --stroke: rgba(255, 255, 255, 0.22);
+  --shade: rgba(0, 0, 0, 0.35);
+  --shade-lg: rgba(0, 0, 0, 0.55);
+  /* code tokens */
+  --tok-com: #5c6172; --tok-str: #d6f88a; --tok-kw: #a5a6fa; --tok-num: #f8b26a;
+  --tok-call: #7dd3fc; --tok-prop: #93c5fd; --tok-punct: #8b8fa3; --tok-tag: #f0a3c0;
+  --tok-plain: #c9ccda;
+}
+html.light {
+  color-scheme: light;
+  --ink: #f4f5f9;
+  --panel: #ffffff;
+  --panel2: #eef0f6;
+  --panel3: #dfe3ec;
+  --line: rgba(10, 11, 20, 0.10);
+  --line2: #c6cad7;
+  --fg: #0e0f16;
+  --mist: #545a6b;
+  --mist2: #7c8294;
+  --acid: #4a8300;
+  --acid-soft: #356200;
+  --on-acid: #ffffff;
+  --viol: #5b5ce6;
+  --viol-soft: #4446c9;
+  --sky: #1d6fd6;
+  --grid: rgba(10, 11, 20, 0.06);
+  --stroke: rgba(10, 11, 20, 0.28);
+  --shade: rgba(0, 0, 0, 0.12);
+  --shade-lg: rgba(20, 24, 40, 0.16);
+  --tok-com: #7a8096; --tok-str: #3d7000; --tok-kw: #5b5ce6; --tok-num: #b45309;
+  --tok-call: #0369a1; --tok-prop: #1d4ed8; --tok-punct: #6b7080; --tok-tag: #be185d;
+  --tok-plain: #1f2330;
+}
+
+@theme inline {
   --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
-  --color-ink: #07070c;
-  --color-panel: #0d0e16;
-  --color-panel2: #12131d;
-  --color-acid: #b4f03c;
-  --color-acid-soft: #d6f88a;
-  --color-viol: #8b8cf8;
-  --color-mist: #9ca0ae;
+  --color-ink: var(--ink);
+  --color-panel: var(--panel);
+  --color-panel2: var(--panel2);
+  --color-panel3: var(--panel3);
+  --color-line: var(--line);
+  --color-line2: var(--line2);
+  --color-fg: var(--fg);
+  --color-mist: var(--mist);
+  --color-mist2: var(--mist2);
+  --color-acid: var(--acid);
+  --color-acid-soft: var(--acid-soft);
+  --color-on-acid: var(--on-acid);
+  --color-viol: var(--viol);
+  --color-viol-soft: var(--viol-soft);
+  --color-sky: var(--sky);
+}
+
+html, body {
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 html {
@@ -18,33 +87,33 @@ html {
 }
 
 body {
-  background: var(--color-ink);
-  color: #ececf1;
+  background: var(--ink);
+  color: var(--fg);
   font-family: var(--font-display);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
 ::selection {
-  background: rgba(180, 240, 60, 0.85);
-  color: #0c0e04;
+  background: var(--acid);
+  color: var(--on-acid);
 }
 
 /* ---------- scrollbar ---------- */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: #0a0b11; }
+::-webkit-scrollbar-track { background: var(--panel); }
 ::-webkit-scrollbar-thumb {
-  background: #23252f;
+  background: var(--panel3);
   border-radius: 8px;
-  border: 2px solid #0a0b11;
+  border: 2px solid var(--panel);
 }
-::-webkit-scrollbar-thumb:hover { background: #33363f; }
+::-webkit-scrollbar-thumb:hover { background: var(--line2); }
 
 /* ---------- backdrop helpers ---------- */
 .bg-grid {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
   background-size: 56px 56px;
 }
 .noise::after {
@@ -59,7 +128,7 @@ body {
 }
 
 .text-stroke {
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.22);
+  -webkit-text-stroke: 1px var(--stroke);
   color: transparent;
 }
 
@@ -69,12 +138,12 @@ body {
   display: grid;
   place-items: center;
   border-radius: 18%;
-  background: linear-gradient(180deg, #262833 0%, #17181f 90%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, var(--panel3) 0%, var(--panel2) 90%);
+  border: 1px solid var(--line);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.09),
     inset 0 -2px 0 rgba(0, 0, 0, 0.35),
-    0 10px 0 0 #0b0c11,
+    0 10px 0 0 var(--panel),
     0 12px 24px rgba(0, 0, 0, 0.6),
     0 22px 60px rgba(180, 240, 60, 0.06);
   transform: translateY(0);
@@ -87,7 +156,7 @@ body {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
     inset 0 -1px 0 rgba(0, 0, 0, 0.35),
-    0 2px 0 0 #0b0c11,
+    0 2px 0 0 var(--panel),
     0 4px 10px rgba(0, 0, 0, 0.5),
     0 8px 40px rgba(180, 240, 60, 0.28);
 }
@@ -109,7 +178,7 @@ body {
     transparent,
     rgba(180, 240, 60, 0.16) 55%,
     rgba(180, 240, 60, 0.55) 96%,
-    #b4f03c 100%
+    var(--acid) 100%
   );
   animation: qk-scan 0.85s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   pointer-events: none;
@@ -151,20 +220,20 @@ body {
 }
 
 /* ---------- code tokens ---------- */
-.tok-com { color: #5c6172; font-style: italic; }
-.tok-str { color: #d6f88a; }
-.tok-kw { color: #a5a6fa; }
-.tok-num { color: #f8b26a; }
-.tok-call { color: #7dd3fc; }
-.tok-prop { color: #93c5fd; }
-.tok-punct { color: #8b8fa3; }
-.tok-tag { color: #f0a3c0; }
-.tok-attr { color: #93c5fd; }
-.tok-chrome { color: #b4f03c; font-weight: 600; }
-.tok-plain { color: #c9ccda; }
+.tok-com { color: var(--tok-com); font-style: italic; }
+.tok-str { color: var(--tok-str); }
+.tok-kw { color: var(--tok-kw); }
+.tok-num { color: var(--tok-num); }
+.tok-call { color: var(--tok-call); }
+.tok-prop { color: var(--tok-prop); }
+.tok-punct { color: var(--tok-punct); }
+.tok-tag { color: var(--tok-tag); }
+.tok-attr { color: var(--tok-prop); }
+.tok-chrome { color: var(--acid); font-weight: 600; }
+.tok-plain { color: var(--tok-plain); }
 
 .code-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
-.code-scroll::-webkit-scrollbar-thumb { background: #23252f; border: 0; }
+.code-scroll::-webkit-scrollbar-thumb { background: var(--panel3); border: 0; }
 
 /* ---------- marquee ---------- */
 @keyframes marquee-x {
@@ -183,7 +252,7 @@ input[type="range"].acid-range {
   appearance: none;
   height: 4px;
   border-radius: 99px;
-  background: #22242e;
+  background: var(--panel3);
   outline: none;
 }
 input[type="range"].acid-range::-webkit-slider-thumb {
@@ -192,17 +261,17 @@ input[type="range"].acid-range::-webkit-slider-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #b4f03c;
-  border: 3px solid #0c0e04;
-  box-shadow: 0 0 0 1px #b4f03c, 0 0 16px rgba(180, 240, 60, 0.45);
+  background: var(--acid);
+  border: 3px solid var(--on-acid);
+  box-shadow: 0 0 0 1px var(--acid), 0 0 16px rgba(180, 240, 60, 0.45);
   cursor: pointer;
 }
 input[type="range"].acid-range::-moz-range-thumb {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #b4f03c;
-  border: 3px solid #0c0e04;
-  box-shadow: 0 0 0 1px #b4f03c, 0 0 16px rgba(180, 240, 60, 0.45);
+  background: var(--acid);
+  border: 3px solid var(--on-acid);
+  box-shadow: 0 0 0 1px var(--acid), 0 0 16px rgba(180, 240, 60, 0.45);
   cursor: pointer;
 }

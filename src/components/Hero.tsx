@@ -93,8 +93,8 @@ export default function Hero() {
   }, [runSequence]);
 
   const toneClass: Record<LogLine["tone"], string> = {
-    cmd: "text-white",
-    info: "text-[#8b90a0]",
+    cmd: "text-fg",
+    info: "text-mist",
     ok: "text-emerald-400",
     lime: "text-acid",
   };
@@ -114,9 +114,9 @@ export default function Hero() {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] py-1.5 pl-2 pr-4"
+              className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-fg/10 bg-fg/[0.04] py-1.5 pl-2 pr-4"
             >
-              <span className="rounded-full bg-acid px-2 py-0.5 font-mono text-[10px] font-bold text-[#0c0e04]">
+              <span className="rounded-full bg-acid px-2 py-0.5 font-mono text-[10px] font-bold text-on-acid">
                 MV3
               </span>
               <span className="text-[12px] font-medium text-mist">
@@ -160,7 +160,7 @@ export default function Hero() {
               QuizKey is a keyboard-first quiz assistant. One configurable shortcut
               captures the page, a vision model reads the question, and a second
               keystroke replays the answer as{" "}
-              <span className="text-white">genuine, per-character keyboard events</span>{" "}
+              <span className="text-fg">genuine, per-character keyboard events</span>{" "}
               — with a human cadence. Never pasted. Fully configurable. Graceful when it fails.
             </motion.p>
 
@@ -172,7 +172,7 @@ export default function Hero() {
             >
               <a
                 href="#demo"
-                className="group flex h-12 items-center gap-2 rounded-xl bg-acid px-6 text-[14px] font-bold text-[#0c0e04] transition-all hover:brightness-110 hover:shadow-[0_0_40px_rgba(180,240,60,0.45)]"
+                className="group flex h-12 items-center gap-2 rounded-xl bg-acid px-6 text-[14px] font-bold text-on-acid transition-all hover:brightness-110 hover:shadow-[0_0_40px_rgba(180,240,60,0.45)]"
               >
                 <Zap size={16} strokeWidth={2.5} />
                 Run the live pipeline
@@ -180,7 +180,7 @@ export default function Hero() {
               </a>
               <a
                 href="#source"
-                className="flex h-12 items-center gap-2 rounded-xl border border-white/12 px-6 text-[14px] font-semibold text-white/85 transition-colors hover:border-white/30 hover:bg-white/5"
+                className="flex h-12 items-center gap-2 rounded-xl border border-fg/12 px-6 text-[14px] font-semibold text-fg/85 transition-colors hover:border-fg/30 hover:bg-fg/5"
               >
                 Browse the source
               </a>
@@ -215,7 +215,7 @@ export default function Hero() {
           >
             <div className="absolute -inset-8 rounded-[40px] bg-[radial-gradient(ellipse_at_center,rgba(180,240,60,0.10),transparent_65%)]" />
 
-            <div className="relative rounded-[28px] border border-white/10 bg-panel/80 p-6 shadow-[0_40px_120px_rgba(0,0,0,0.6)] backdrop-blur md:p-9">
+            <div className="relative rounded-[28px] border border-fg/10 bg-panel/80 p-6 shadow-[0_40px_120px_var(--shade-lg)] backdrop-blur md:p-9">
               {flashing && <div className="qk-flash rounded-[28px]" />}
               {flashing && <div className="qk-scanline" />}
 
@@ -247,11 +247,11 @@ export default function Hero() {
                   onTouchEnd={() => setAltDown(false)}
                   className={`keycap h-24 w-32 md:h-28 md:w-40 ${altDown ? "pressed" : ""}`}
                 >
-                  <span className="font-mono text-lg font-semibold tracking-[0.2em] text-white/75 md:text-xl">
+                  <span className="font-mono text-lg font-semibold tracking-[0.2em] text-fg/75 md:text-xl">
                     ALT
                   </span>
                 </button>
-                <span className="font-mono text-2xl font-light text-white/25">+</span>
+                <span className="font-mono text-2xl font-light text-fg/25">+</span>
                 <button
                   aria-label="Q key"
                   onMouseDown={() => {
@@ -275,9 +275,9 @@ export default function Hero() {
               </div>
 
               {/* terminal */}
-              <div className="mt-9 min-h-[152px] rounded-2xl border border-white/[0.07] bg-[#0a0b11] p-4 font-mono text-[11.5px] leading-[1.9]">
+              <div className="mt-9 min-h-[152px] rounded-2xl border border-fg/[0.07] bg-panel p-4 font-mono text-[11.5px] leading-[1.9]">
                 {log.length === 0 ? (
-                  <p className="text-[#565b6c]">
+                  <p className="text-mist2">
                     <span className="text-acid">$</span> quizkey — waiting for input…
                     <span className="caret-blink ml-1 inline-block h-3.5 w-[7px] translate-y-0.5 bg-acid/80" />
                   </p>
@@ -298,9 +298,9 @@ export default function Hero() {
 
               <p className="mt-4 text-center font-mono text-[11px] text-mist">
                 press{" "}
-                <kbd className="rounded border border-white/15 bg-white/5 px-1.5 py-0.5 text-acid">Alt</kbd>{" "}
+                <kbd className="rounded border border-fg/15 bg-fg/5 px-1.5 py-0.5 text-acid">Alt</kbd>{" "}
                 +{" "}
-                <kbd className="rounded border border-white/15 bg-white/5 px-1.5 py-0.5 text-acid">Q</kbd>{" "}
+                <kbd className="rounded border border-fg/15 bg-fg/5 px-1.5 py-0.5 text-acid">Q</kbd>{" "}
                 on your real keyboard — or click the caps
               </p>
             </div>
@@ -309,12 +309,12 @@ export default function Hero() {
       </div>
 
       {/* marquee */}
-      <div className="relative border-y border-white/[0.06] bg-white/[0.015] py-3.5">
+      <div className="relative border-y border-fg/[0.06] bg-fg/[0.015] py-3.5">
         <div className="marquee-track gap-10">
           {[...MARQUEE, ...MARQUEE].map((item, i) => (
             <span
               key={i}
-              className="flex items-center gap-10 whitespace-nowrap font-mono text-[11.5px] text-[#565b6c]"
+              className="flex items-center gap-10 whitespace-nowrap font-mono text-[11.5px] text-mist2"
             >
               {item}
               <span className="h-1 w-1 rounded-full bg-acid/50" />
