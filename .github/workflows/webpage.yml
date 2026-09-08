@@ -6,14 +6,19 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: write   # push to gh-pages
+  pages: write      # artifact deployment
+  id-token: write   # artifact deployment
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  # ------------------------------------------------------------------
+  # 1. Build the site, zip the extension, wire the download links, verify
+  # ------------------------------------------------------------------
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,12 +43,12 @@ jobs:
 
       - name: Point download links at the zip (relative to the page)
         run: |
-          # Works whatever the source says: "/quizkey-extension.zip", "./…", or a full URL.
           sed -i -E 's#(href[=:] ?")[^"]*quizkey-extension\.zip"#\1./quizkey-extension.zip"#g' dist/index.html
           echo "links after rewrite:"
           grep -o 'href[=:] \?"[^"]*quizkey-extension.zip"' dist/index.html | sort | uniq -c
+          touch dist/.nojekyll
 
-      - name: Verify
+      - name: Verify build output
         run: |
           test -s dist/quizkey-extension.zip || { echo "::error::zip missing or empty"; exit 1; }
           unzip -tq dist/quizkey-extension.zip
@@ -51,9 +56,76 @@ jobs:
           grep -q '"./quizkey-extension.zip"' dist/index.html || { echo "::error::download link not found in index.html"; exit 1; }
           echo "OK — zip and links verified"
 
+      # for the branch deployment
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: dist
+          include-hidden-files: true
+
+      # for the Pages-artifact deployment
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  # ------------------------------------------------------------------
+  # 2a. Publish to the gh-pages branch
+  #     (used when Settings → Pages → Source = "Deploy from a branch")
+  # ------------------------------------------------------------------
+  deploy-branch:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: dist
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           publish_branch: gh-pages
           force_orphan: true
+
+  # ------------------------------------------------------------------
+  # 2b. Publish as a Pages artifact
+  #     (used when Settings → Pages → Source = "GitHub Actions")
+  #     Allowed to fail: it 404s when Pages is in branch mode.
+  # ------------------------------------------------------------------
+  deploy-pages:
+    needs: build
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  # ------------------------------------------------------------------
+  # 3. Prove the download works on the live site
+  # ------------------------------------------------------------------
+  verify-live:
+    needs: [deploy-branch, deploy-pages]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Poll the live URL until the zip is served
+        run: |
+          OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
+          REPO='${{ github.event.repository.name }}'
+          SITE="https://${OWNER}.github.io/${REPO}"
+          echo "Site: ${SITE}/"
+          for i in $(seq 1 16); do
+            ZIP=$(curl -s -o /dev/null -w '%{http_code}' -H 'Cache-Control: no-cache' "${SITE}/quizkey-extension.zip?nocache=$RANDOM")
+            PAGE=$(curl -s -H 'Cache-Control: no-cache' "${SITE}/?nocache=$RANDOM" | grep -c '"./quizkey-extension.zip"' || true)
+            echo "try $i: zip HTTP ${ZIP}, links in page: ${PAGE}"
+            if [ "$ZIP" = "200" ] && [ "$PAGE" -gt 0 ]; then
+              echo "✅ Live download works: ${SITE}/quizkey-extension.zip"
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "::error::The live site still serves an old build. Open https://github.com/${{ github.repository }}/settings/pages and set Source to 'Deploy from a branch' → gh-pages → / (root), then re-run this workflow."
+          exit 1
