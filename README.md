@@ -165,6 +165,17 @@ of the last requests (keys are never logged).
 | `overlayPosition` | string | `top-right` | Where the in-page panel appears. |
 | `theme` | `auto` \| `dark` \| `light` | `auto` | Appearance of the options page, popup and on-page overlay. The Sun/Moon button in the options/popup header flips it; `auto` follows the OS. |
 
+## In-page overlay
+
+- Every card and toast has a **close (×)** button; `Esc` closes the overlay while one of
+  its controls is focused. Toasts still auto-dismiss.
+- The overlay **stays on top**: its root is a `popover="manual"` element, so it lives in the
+  browser's *top layer* — above every `z-index` on the page, including `<dialog>` modals and
+  the site's own popovers. A `MutationObserver` re-attaches it if a page script removes it
+  and re-raises it after fullscreen changes; on browsers without the Popover API it falls
+  back to `z-index: 2147483647` as the last child of `<html>`.
+- The overlay is hidden before each screenshot so the model never sees a previous answer.
+
 ## Typing realism:
 
 Each character dispatches the exact sequence a physical keyboard produces:

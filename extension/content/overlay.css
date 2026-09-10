@@ -19,14 +19,29 @@
   --qk-green: #4ade80;
   --qk-red: #f87171;
   --qk-viol: #a5a6fa;
-  position: fixed;
-  z-index: 2147483646;
+  /* The root is a popover (top layer). The UA popover stylesheet sets
+     inset:0 / margin:auto / border / padding / background — reset all of it
+     so the root is just an invisible anchor in the chosen corner. The
+     !important flags also protect us from aggressive page resets. */
+  position: fixed !important;
+  inset: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  overflow: visible !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  z-index: 2147483647 !important;
   font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
   font-size: 13px;
   line-height: 1.45;
   color: var(--qk-text);
   pointer-events: none;
 }
+#quizkey-overlay-root::backdrop { display: none; background: transparent; }
 #quizkey-overlay-root[data-theme="light"] {
   --qk-text: #0e0f16;
   --qk-surface: rgba(255, 255, 255, 0.97);
@@ -43,13 +58,14 @@
   --qk-red: #dc2626;
   --qk-viol: #4446c9;
 }
-#quizkey-overlay-root[data-pos="top-right"]    { top: 16px; right: 16px; }
-#quizkey-overlay-root[data-pos="top-left"]     { top: 16px; left: 16px; }
-#quizkey-overlay-root[data-pos="bottom-right"] { bottom: 16px; right: 16px; }
-#quizkey-overlay-root[data-pos="bottom-left"]  { bottom: 16px; left: 16px; }
+#quizkey-overlay-root[data-pos="top-right"]    { top: 16px !important; right: 16px !important; }
+#quizkey-overlay-root[data-pos="top-left"]     { top: 16px !important; left: 16px !important; }
+#quizkey-overlay-root[data-pos="bottom-right"] { bottom: 16px !important; right: 16px !important; }
+#quizkey-overlay-root[data-pos="bottom-left"]  { bottom: 16px !important; left: 16px !important; }
 
 #quizkey-overlay-root .qk-card,
 #quizkey-overlay-root .qk-toast {
+  position: relative;
   pointer-events: auto;
   width: 320px;
   max-width: calc(100vw - 32px);
@@ -67,7 +83,34 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-#quizkey-overlay-root .qk-card-row { display: flex; gap: 10px; align-items: flex-start; }
+#quizkey-overlay-root .qk-card-row { display: flex; gap: 10px; align-items: flex-start; padding-right: 26px; }
+
+/* ---------- close (×) button ---------- */
+#quizkey-overlay-root .qk-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  margin: 0;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--qk-text);
+  opacity: 0.55;
+  font: inherit;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: opacity 0.15s, background 0.15s;
+}
+#quizkey-overlay-root .qk-close:hover { opacity: 1; background: var(--qk-track); }
+#quizkey-overlay-root .qk-close:focus-visible { opacity: 1; outline: 2px solid var(--qk-lime); outline-offset: 1px; }
+#quizkey-overlay-root .qk-eyebrow { padding-right: 30px; }
+#quizkey-overlay-root .qk-toast-text { padding-right: 26px; }
 #quizkey-overlay-root .qk-card-text { min-width: 0; }
 #quizkey-overlay-root .qk-card-title { font-weight: 650; margin: 0; }
 #quizkey-overlay-root .qk-card-detail { margin: 2px 0 0; opacity: 0.65; font-size: 12px; }

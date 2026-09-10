@@ -14,6 +14,79 @@
   let themeMode = "auto";
   let dismissTimer = null;
 
+  /* ---------------------------------------------------------------- */
+  /* Always on top                                                      */
+  /*                                                                    */
+  /* 1. The root is a `popover="manual"` element. Open popovers live in */
+  /*    the browser's *top layer*, which renders above every z-index on */
+  /*    the page — including <dialog> modals and the page's own         */
+  /*    popovers. Re-opening it moves it to the front of that layer.    */
+  /* 2. A MutationObserver re-attaches the root if a page script        */
+  /*    removes it and keeps it the last child of <html>, so the        */
+  /*    z-index fallback (max int) also wins in older browsers.         */
+  /* ---------------------------------------------------------------- */
+  const supportsPopover =
+    typeof HTMLElement !== "undefined" && typeof HTMLElement.prototype.showPopover === "function";
+  let guard = null;
+  let raising = false;
+
+  function isOpen(root) {
+    try {
+      return supportsPopover && root.matches(":popover-open");
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /** Bring the root to the very front (top layer + last DOM child). */
+  function raise(root) {
+    if (raising) return;
+    raising = true;
+    try {
+      const html = document.documentElement;
+      if (root.parentNode !== html || html.lastElementChild !== root) {
+        html.appendChild(root); // (re)attach — also moves it after any newer siblings
+      }
+      if (supportsPopover) {
+        if (root.getAttribute("popover") !== "manual") root.setAttribute("popover", "manual");
+        try {
+          if (isOpen(root)) root.hidePopover(); // re-show = move to the top of the top layer
+          root.showPopover();
+        } catch (_) {
+          /* not connected yet or already open — ignore */
+        }
+      }
+    } finally {
+      raising = false;
+    }
+  }
+
+  /** Watch for hostile pages that remove or bury the overlay. */
+  function startGuard(root) {
+    if (guard || typeof MutationObserver === "undefined") return;
+    guard = new MutationObserver(() => {
+      if (raising) return;
+      const live = document.getElementById(ROOT_ID);
+      if (!live || live !== root) {
+        // Someone removed our node: put it back with its content intact.
+        if (!root.isConnected && root.childElementCount) raise(root);
+        return;
+      }
+      if (root.id !== ROOT_ID) root.id = ROOT_ID;
+      const buried = document.documentElement.lastElementChild !== root;
+      const closed = root.childElementCount > 0 && supportsPopover && !isOpen(root);
+      const tampered = supportsPopover && root.getAttribute("popover") !== "manual";
+      if (buried || closed || tampered) raise(root);
+    });
+    guard.observe(document.documentElement, { childList: true });
+    guard.observe(root, { attributes: true, attributeFilter: ["id", "popover", "style", "class"] });
+
+    // Fullscreen elements enter the top layer above us — climb back on top.
+    document.addEventListener("fullscreenchange", () => {
+      if (root.childElementCount) raise(root);
+    });
+  }
+
   const lightQuery = window.matchMedia ? window.matchMedia("(prefers-color-scheme: light)") : null;
   const resolveTheme = (mode) =>
     mode === "dark" || mode === "light" ? mode : lightQuery && lightQuery.matches ? "light" : "dark";
@@ -28,15 +101,42 @@
       root.id = ROOT_ID;
       root.setAttribute("data-pos", position);
       root.setAttribute("data-theme", resolveTheme(themeMode));
+      root.setAttribute("role", "region");
+      root.setAttribute("aria-label", "QuizKey");
+      if (supportsPopover) root.setAttribute("popover", "manual");
       document.documentElement.appendChild(root);
+      startGuard(root);
     }
+    raise(root);
     return root;
   }
 
   function clear() {
     const root = document.getElementById(ROOT_ID);
-    if (root) root.innerHTML = "";
+    if (root) {
+      root.innerHTML = "";
+      if (isOpen(root)) {
+        try {
+          root.hidePopover(); // leave the top layer when there is nothing to show
+        } catch (_) {
+          /* ignore */
+        }
+      }
+    }
     if (dismissTimer) clearTimeout(dismissTimer);
+  }
+
+  /** Close (×) button shared by cards and toasts. */
+  function closeButton(onClose) {
+    const btn = el("button", "qk-close", "×");
+    btn.type = "button";
+    btn.setAttribute("aria-label", "Close");
+    btn.title = "Close";
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      onClose();
+    });
+    return btn;
   }
 
   function autoDismiss(ms) {
@@ -65,6 +165,7 @@
     if (detail) col.appendChild(el("p", "qk-card-detail", detail));
     row.appendChild(col);
     card.appendChild(row);
+    card.appendChild(closeButton(clear));
     root.appendChild(card);
   }
 
@@ -74,6 +175,7 @@
     root.innerHTML = "";
 
     const card = el("div", "qk-card qk-card-analysis");
+    card.appendChild(closeButton(clear));
     card.appendChild(el("p", "qk-eyebrow", "Question detected"));
 
     if (analysis.question) card.appendChild(el("p", "qk-question", analysis.question));
@@ -103,10 +205,7 @@
     const typeBtn = el("button", "qk-btn", busy ? "Typing…" : "Type answer  ⌥A");
     typeBtn.disabled = busy;
     typeBtn.addEventListener("click", () => onType?.());
-    const closeBtn = el("button", "qk-btn qk-btn-ghost", "Dismiss");
-    closeBtn.addEventListener("click", clear);
     actions.appendChild(typeBtn);
-    actions.appendChild(closeBtn);
     card.appendChild(actions);
 
     root.appendChild(card);
@@ -129,10 +228,34 @@
     const toast = el("div", `qk-toast qk-toast-${tone}`);
     toast.appendChild(el("span", "qk-toast-icon", icon));
     toast.appendChild(el("span", "qk-toast-text", message));
-    toast.addEventListener("click", () => toast.remove());
+    toast.setAttribute("role", tone === "error" ? "alert" : "status");
+    const timer = setTimeout(remove, ms);
+    function remove() {
+      clearTimeout(timer);
+      toast.remove();
+      // Nothing left? Step out of the top layer.
+      if (root.childElementCount === 0 && isOpen(root)) {
+        try {
+          root.hidePopover();
+        } catch (_) {
+          /* ignore */
+        }
+      }
+    }
+    toast.appendChild(closeButton(remove));
     root.appendChild(toast);
-    setTimeout(() => toast.remove(), ms);
   }
+
+  // Esc while a QuizKey control is focused closes the overlay (never steals
+  // Esc from the page otherwise).
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    const root = document.getElementById(ROOT_ID);
+    if (root && root.contains(document.activeElement)) {
+      e.stopPropagation();
+      clear();
+    }
+  });
 
   window.QuizKey.Overlay = Object.freeze({
     clear,
