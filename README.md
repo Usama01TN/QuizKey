@@ -1,10 +1,15 @@
 # QuizKey — AI Quiz Assistant (Manifest V3)
 ![Screenshot](public/screenshot.gif)
 
-Press a keyboard shortcut → QuizKey screenshots the visible tab, sends it to a
-vision AI model, detects the quiz question and answers, then types the best
-answer into the page with **realistic, per-character keyboard events** — never
-a paste.
+Press a keyboard shortcut → QuizKey captures the quiz — **as a screenshot or as
+the page's HTML, your choice** (switch in the popup or with `Alt+S`) — sends it to
+an AI model, detects the question and answers, then types the best answer into
+the page with **realistic, per-character keyboard events** — never a paste.
+
+The HTML source works with any text-only model (including local ones) and is
+cheaper; the Image source needs a vision model but sees everything on screen.
+See [`extension/README.md`](extension/README.md#quiz-source-switcher-image-or-html)
+for details.
 
 > Use responsibly and respect the academic-integrity and site policies that
 > apply to you.

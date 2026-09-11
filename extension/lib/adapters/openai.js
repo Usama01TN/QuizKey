@@ -151,17 +151,18 @@ export async function listModels(args) {
   return (await listModelsWithBase(args)).ids;
 }
 
-/** Vision completion → normalized reply for lib/analysis.js. */
+/**
+ * Completion → normalized reply for lib/analysis.js.
+ * `image` is optional: with it this is a vision request (screenshot source),
+ * without it a plain text request (HTML source).
+ */
 export async function complete({ base, settings, image, system, user, maxTokens, timeoutMs }) {
+  const userContent = [{ type: "text", text: user }];
+  if (image?.dataUrl) userContent.push({ type: "image_url", image_url: { url: image.dataUrl, detail: "high" } });
   const messages = [
     { role: "system", content: system },
-    {
-      role: "user",
-      content: [
-        { type: "text", text: user },
-        { type: "image_url", image_url: { url: image.dataUrl, detail: "high" } },
-      ],
-    },
+    // Some text-only servers reject array content — send a bare string then.
+    { role: "user", content: image?.dataUrl ? userContent : user },
   ];
   const { payload, model } = await chatCompletions({ base, settings, messages, maxTokens, timeoutMs, label: "analyze" });
 

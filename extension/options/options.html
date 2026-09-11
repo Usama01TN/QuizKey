@@ -14,7 +14,7 @@
           <span class="brand-key">QK</span>
           <div>
             <h1>QuizKey settings</h1>
-            <p>AI provider, capture, typing behavior and shortcuts.</p>
+            <p>AI provider, quiz source, capture, typing behavior and shortcuts.</p>
           </div>
         </div>
         <div class="head-actions">
@@ -74,7 +74,7 @@
           </label>
 
           <label class="field field-wide">
-            <span>Model <em>(must accept image input)</em></span>
+            <span>Model <em id="model-hint">(must accept image input)</em></span>
             <div class="key-row">
               <input id="model" type="text" list="model-list" placeholder="gpt-4o-mini" spellcheck="false" autocomplete="off" />
               <datalist id="model-list"></datalist>
@@ -103,10 +103,10 @@
           <button id="btn-diagnose" class="btn btn-ghost" type="button">Run diagnostic</button>
           <span id="test-result" class="test-result"></span>
         </div>
-        <p class="field-note">
-          <strong>Run diagnostic</strong> sends a built-in sample quiz image through the exact
-          capture → analyze pipeline the shortcut uses and shows the parsed answer or the
-          provider's real error.
+        <p class="field-note" id="diagnose-note">
+          <strong>Run diagnostic</strong> sends a built-in sample quiz through the exact
+          capture → analyze pipeline the shortcut uses — as an image or as HTML, following the
+          quiz source below — and shows the parsed answer or the provider's real error.
         </p>
 
         <details class="log" id="call-log">
@@ -116,9 +116,48 @@
         </details>
       </section>
 
+      <!-- ============================ Quiz source ============================ -->
+      <section class="card">
+        <h2><span class="num">02</span> Quiz source</h2>
+        <p class="card-desc">
+          Choose what QuizKey sends to the model when you press the capture shortcut. Switch
+          any time from the popup or with <kbd id="toggle-key">Alt+S</kbd> on the page.
+        </p>
+        <div id="source-switch" class="seg" role="radiogroup" aria-label="Quiz source">
+          <button type="button" class="seg-btn" data-source="image" role="radio" aria-checked="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 15-4.5-4.5L9 18"/></svg>
+            <span class="seg-text">
+              <strong>Image</strong>
+              <small>Screenshot of the visible tab. Sees everything a human sees — including images, canvas and PDFs — but needs a vision model and costs more tokens.</small>
+            </span>
+          </button>
+          <button type="button" class="seg-btn" data-source="html" role="radio" aria-checked="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg>
+            <span class="seg-text">
+              <strong>HTML</strong>
+              <small>Cleaned extract of the quiz markup (question, options, fields). Works with any text model, is cheaper and exact for text — but can't read questions rendered as images.</small>
+            </span>
+          </button>
+        </div>
+
+        <div id="html-options" class="grid" style="margin-top: 16px;">
+          <label class="field">
+            <span>HTML scope <em>(a text selection on the page always wins)</em></span>
+            <select id="htmlScope">
+              <option value="viewport">What's on screen — like the screenshot</option>
+              <option value="page">Whole page — for long or scrolled quizzes</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Max extract size <em>(characters sent to the model)</em></span>
+            <input id="htmlMaxChars" type="number" min="1000" max="200000" step="1000" />
+          </label>
+        </div>
+      </section>
+
       <!-- ============================ Capture ============================ -->
       <section class="card">
-        <h2><span class="num">02</span> Screenshot capture</h2>
+        <h2><span class="num">03</span> Screenshot capture <em class="h2-note">(Image source only)</em></h2>
         <div class="grid">
           <label class="field">
             <span>Image format</span>
@@ -136,7 +175,7 @@
 
       <!-- ============================ Typing ============================ -->
       <section class="card">
-        <h2><span class="num">03</span> Typing simulation</h2>
+        <h2><span class="num">04</span> Typing simulation</h2>
         <p class="card-desc">
           Answers are replayed as real keyboard events — <code>keydown → keypress →
           beforeinput → input → keyup</code> — one character at a time, never pasted.
@@ -164,7 +203,7 @@
 
       <!-- ============================ Behavior ============================ -->
       <section class="card">
-        <h2><span class="num">04</span> Behavior</h2>
+        <h2><span class="num">05</span> Behavior</h2>
         <div class="toggles">
           <label class="toggle">
             <input id="autoType" type="checkbox" />
@@ -212,7 +251,7 @@
 
       <!-- ============================ Local files ============================ -->
       <section class="card">
-        <h2><span class="num">05</span> Local files (file://)</h2>
+        <h2><span class="num">06</span> Local files (file://)</h2>
         <p class="card-desc">
           QuizKey can capture local quiz files out of the box, but typing and the on-page
           overlay need your permission for local files. Grant it here — one click, then
@@ -229,7 +268,7 @@
 
       <!-- ============================ Shortcuts ============================ -->
       <section class="card">
-        <h2><span class="num">06</span> Keyboard shortcuts</h2>
+        <h2><span class="num">07</span> Keyboard shortcuts</h2>
         <p class="card-desc">
           Record a new combination below. If the browser blocks in-extension rebinding,
           open <code>chrome://extensions/shortcuts</code> and set them there instead.

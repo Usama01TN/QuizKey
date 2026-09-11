@@ -30,9 +30,27 @@
       <div id="shortcut-list" class="shortcut-list"></div>
     </section>
 
+    <section class="source">
+      <div class="source-head">
+        <p class="section-label">Quiz source</p>
+        <kbd id="source-hint-key" title="Shortcut to switch">Alt+S</kbd>
+      </div>
+      <div id="source-switch" class="seg" role="radiogroup" aria-label="Quiz source">
+        <button type="button" class="seg-btn" data-source="image" role="radio" aria-checked="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 15-4.5-4.5L9 18"/></svg>
+          <span>Image</span>
+        </button>
+        <button type="button" class="seg-btn" data-source="html" role="radio" aria-checked="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg>
+          <span>HTML</span>
+        </button>
+      </div>
+      <p id="source-desc" class="source-desc">Screenshots the visible tab — needs a vision model.</p>
+    </section>
+
     <section class="actions">
       <button id="btn-capture" class="btn btn-primary" disabled>
-        <span class="btn-title">Capture &amp; analyze</span>
+        <span class="btn-title" id="capture-title">Capture &amp; analyze</span>
         <span class="btn-sub" id="capture-hint">Alt+Q</span>
       </button>
       <button id="btn-type" class="btn" disabled>
@@ -47,7 +65,7 @@
       <p class="section-label">Latest analysis</p>
       <p id="result-question" class="result-question"></p>
       <div class="result-answer">
-        <span class="result-answer-label">Best answer</span>
+        <span class="result-answer-label">Best answer <span id="result-source" class="result-source"></span></span>
         <span id="result-answer" class="result-answer-text"></span>
       </div>
       <div class="conf">

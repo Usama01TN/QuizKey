@@ -4,15 +4,17 @@
  *
  * Responsibilities:
  *   - listen for the configured keyboard commands
- *   - capture the visible tab
- *   - call the AI vision client
+ *   - capture the visible tab (quiz source "image") or ask the content
+ *     script for a cleaned HTML extract (quiz source "html")
+ *   - call the AI client
  *   - persist results per tab
  *   - forward everything to the content script
  *   - surface lifecycle state through the action badge
  */
-import { getSettings, saveResult, getResult, pruneResults } from "../lib/storage.js";
+import { getSettings, setSettings, saveResult, getResult, pruneResults } from "../lib/storage.js";
 import {
   analyzeScreenshot,
+  analyzePageHtml,
   testConnection,
   listModels,
   hasUsableCredentials,
@@ -26,6 +28,7 @@ import { classifyPageAccess, hasFileUrlsPermission } from "../lib/page-access.js
 const CONTENT_STYLE = ["content/overlay.css"];
 const CONTENT_FILES = [
   "content/dom-detector.js",
+  "content/page-extractor.js",
   "content/typing-simulator.js",
   "content/overlay.js",
   "content/content-script.js",
@@ -190,18 +193,11 @@ async function hasEndpointPermission(apiBaseUrl) {
 /* Core pipeline                                                        */
 /* ------------------------------------------------------------------ */
 
-async function runCaptureAndAnalyze(tab) {
-  if (!tab?.id) throw new QuizKeyError(ErrorCodes.NO_ACTIVE_TAB);
-  await assertPageAccessOk(tab);
-  const settings = await getSettings();
+const SOURCE_LABEL = { image: "Screenshot", html: "Page HTML" };
 
-  if (!hasUsableCredentials(settings)) throw new QuizKeyError(ErrorCodes.API_KEY_MISSING);
-
-  await badge.busy(tab.id);
-
-  // Nothing of ours may be in the screenshot: hide the overlay + outlines,
-  // then give the page one frame to repaint before capturing.
-  await notifyTab(tab.id, { type: "QUIZKEY_HIDE_OVERLAY" });
+/** Quiz source "image": screenshot the visible tab → data URL. */
+async function captureScreenshot(tab, settings) {
+  // Give the page one frame to repaint without our overlay before capturing.
   await new Promise((r) => setTimeout(r, 120));
 
   const captureOptions =
@@ -216,25 +212,35 @@ async function runCaptureAndAnalyze(tab) {
     throw new QuizKeyError(ErrorCodes.CAPTURE_FAILED, String(err), err);
   }
   if (!dataUrl) throw new QuizKeyError(ErrorCodes.CAPTURE_FAILED, "Empty capture");
+  return prepareImage(dataUrl, settings);
+}
 
-  dataUrl = await prepareImage(dataUrl, settings);
-
-  await notifyTab(tab.id, {
-    type: "QUIZKEY_SHOW_STATUS",
-    headline: "Analyzing with AI…",
-    detail: `${settings.model || "auto model"} · ${resolveApiStyle(settings)} API`,
-    tone: "working",
-    position: settings.overlayPosition,
-    theme: settings.theme,
-  });
-
-  let analysis;
+/** Quiz source "html": ask the content script for a cleaned DOM extract. */
+async function extractPageHtml(tab, settings) {
+  let res;
   try {
-    analysis = await analyzeScreenshot({ dataUrl, settings });
+    res = await sendToTab(tab.id, {
+      type: "QUIZKEY_EXTRACT_PAGE",
+      options: { maxChars: settings.htmlMaxChars, scope: settings.htmlScope },
+    });
+  } catch (err) {
+    throw new QuizKeyError(ErrorCodes.EXTRACT_FAILED, err?.message || String(err), err);
+  }
+  if (!res?.ok || !String(res.html || "").trim()) {
+    throw new QuizKeyError(ErrorCodes.EXTRACT_FAILED, res?.error || "Empty extract");
+  }
+  return { html: res.html, meta: res.meta || {} };
+}
+
+/**
+ * Turn a bare connection failure on an ungranted endpoint into the precise
+ * "click Grant access" remedy — it's the #1 cause of silent failures.
+ */
+async function withPermissionHint(settings, task) {
+  try {
+    return await task();
   } catch (err) {
     console.warn("[QuizKey] analysis failed:", err?.code, err?.message);
-    // A network-level failure on an endpoint we have no host permission for
-    // is almost always the missing grant — say so precisely.
     if (err?.code === ErrorCodes.API_CONNECTION_FAILED && !(await hasEndpointPermission(settings.apiBaseUrl))) {
       throw new QuizKeyError(
         ErrorCodes.PERMISSION_DENIED,
@@ -246,6 +252,55 @@ async function runCaptureAndAnalyze(tab) {
     }
     throw err;
   }
+}
+
+/**
+ * @param {chrome.tabs.Tab} tab
+ * @param {{ source?: "image"|"html" }} [opts] — one-off source override
+ *   (the popup passes the switcher value; shortcuts use the saved setting)
+ */
+async function runCaptureAndAnalyze(tab, { source } = {}) {
+  if (!tab?.id) throw new QuizKeyError(ErrorCodes.NO_ACTIVE_TAB);
+  await assertPageAccessOk(tab);
+  const settings = await getSettings();
+  const mode = source === "html" || source === "image" ? source : settings.captureSource === "html" ? "html" : "image";
+
+  if (!hasUsableCredentials(settings)) throw new QuizKeyError(ErrorCodes.API_KEY_MISSING);
+
+  await badge.busy(tab.id);
+
+  // Nothing of ours may be in the capture: hide the overlay + outlines first.
+  // (The HTML extractor also skips the overlay root, but a stale answer card
+  // on screen would still mislead the *user* while a new run is in flight.)
+  await notifyTab(tab.id, { type: "QUIZKEY_HIDE_OVERLAY" });
+
+  const status = (headline, detail) =>
+    notifyTab(tab.id, {
+      type: "QUIZKEY_SHOW_STATUS",
+      headline,
+      detail,
+      tone: "working",
+      position: settings.overlayPosition,
+      theme: settings.theme,
+    });
+
+  const modelLabel = `${settings.model || "auto model"} · ${resolveApiStyle(settings)} API`;
+  let analysis;
+
+  if (mode === "html") {
+    await status("Reading page HTML…", "extracting the visible quiz");
+    const { html, meta } = await extractPageHtml(tab, settings);
+    await status(
+      "Analyzing with AI…",
+      `${modelLabel} · HTML ${meta.scope || "viewport"} · ${(meta.chars || html.length).toLocaleString()} chars${meta.truncated ? " (truncated)" : ""}`
+    );
+    analysis = await withPermissionHint(settings, () => analyzePageHtml({ html, meta, settings }));
+  } else {
+    const dataUrl = await captureScreenshot(tab, settings);
+    await status("Analyzing with AI…", `${modelLabel} · screenshot`);
+    analysis = await withPermissionHint(settings, () => analyzeScreenshot({ dataUrl, settings }));
+  }
+
   await saveResult(tab.id, analysis);
   await sendToTab(tab.id, { type: "QUIZKEY_ANALYSIS", analysis, settings });
   await badge.ok(tab.id);
@@ -254,6 +309,23 @@ async function runCaptureAndAnalyze(tab) {
     await sendToTab(tab.id, { type: "QUIZKEY_TYPE_ANSWER" });
   }
   return analysis;
+}
+
+/** Flip the quiz source (Alt+S) and tell the user which one is active now. */
+async function runToggleSource(tab) {
+  const settings = await getSettings();
+  const next = settings.captureSource === "html" ? "image" : "html";
+  await setSettings({ captureSource: next });
+  if (tab?.id) {
+    await notifyTab(tab.id, {
+      type: "QUIZKEY_TOAST",
+      text: `Quiz source: ${SOURCE_LABEL[next]} — press the capture shortcut to analyze.`,
+      tone: "info",
+      position: settings.overlayPosition,
+      theme: settings.theme,
+    });
+  }
+  return { captureSource: next };
 }
 
 async function runTypeAnswer(tab) {
@@ -300,6 +372,7 @@ async function guarded(tab, task) {
 chrome.commands.onCommand.addListener((command, tab) => {
   if (command === "capture-and-answer") void guarded(tab, () => runCaptureAndAnalyze(tab));
   if (command === "type-answer") void guarded(tab, () => runTypeAnswer(tab));
+  if (command === "toggle-quiz-source") void guarded(tab, () => runToggleSource(tab));
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -345,7 +418,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         (async () => {
           const tab = await chrome.tabs.get(message.tabId).catch(() => null);
           if (!tab) throw new QuizKeyError(ErrorCodes.NO_ACTIVE_TAB);
-          if (message.action === "capture") return runCaptureAndAnalyze(tab);
+          if (message.action === "capture") return runCaptureAndAnalyze(tab, { source: message.source });
+          if (message.action === "toggle-source") return runToggleSource(tab);
           if (message.action === "type") return runTypeAnswer(tab);
           return { ok: false };
         })().catch((err) => ({ error: normalizeError(err).toJSON() }))
@@ -384,6 +458,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             const settings = { ...(await getSettings()), ...(message.settings || {}) };
             const dataUrl = await prepareImage(message.dataUrl, settings);
             const analysis = await analyzeScreenshot({ dataUrl, settings });
+            return { ok: true, analysis };
+          } catch (err) {
+            return { ok: false, error: normalizeError(err).toJSON() };
+          }
+        })()
+      );
+
+    case "QUIZKEY_ANALYZE_HTML":
+      return respond(
+        (async () => {
+          try {
+            const settings = { ...(await getSettings()), ...(message.settings || {}) };
+            const analysis = await analyzePageHtml({ html: message.html, meta: message.meta || {}, settings });
             return { ok: true, analysis };
           } catch (err) {
             return { ok: false, error: normalizeError(err).toJSON() };

@@ -263,3 +263,42 @@ output { float: right; font-family: ui-monospace, Menlo, monospace; font-size: 1
 :root[data-theme="light"] .theme-toggle .icon-moon { opacity: 1; transform: rotate(0) scale(1); }
 
 button:not(:disabled) { cursor: pointer; }
+
+/* ---------- quiz source switcher (Image / HTML) ---------- */
+.h2-note { font-style: normal; font-size: 12px; font-weight: 500; color: var(--muted); margin-left: 6px; }
+.seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--panel-3);
+  border: 1px solid var(--border);
+}
+.seg-btn {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.seg-btn svg { flex: none; width: 18px; height: 18px; margin-top: 2px; }
+.seg-btn:hover { color: var(--text); background: var(--panel-2); }
+.seg-btn[aria-checked="true"] {
+  background: var(--lime-dim);
+  border-color: rgba(180, 240, 60, 0.45);
+  color: var(--lime);
+}
+.seg-btn:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+.seg-text { display: flex; flex-direction: column; gap: 4px; }
+.seg-text strong { font-size: 13.5px; color: inherit; }
+.seg-text small { font-size: 12px; line-height: 1.45; color: var(--muted); font-weight: 500; }
+.seg-btn[aria-checked="true"] .seg-text small { color: var(--text-strong); }
+@media (max-width: 560px) { .seg { grid-template-columns: 1fr; } }

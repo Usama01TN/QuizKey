@@ -9,6 +9,7 @@ import {
   getSettings,
   setSettings,
   resetSettings,
+  onSettingsChanged,
   DEFAULT_SETTINGS,
 } from "../lib/storage.js";
 import {
@@ -47,6 +48,7 @@ const els = {
   apiStyle: $("#apiStyle"),
   styleDetected: $("#style-detected"),
   model: $("#model"),
+  modelHint: $("#model-hint"),
   modelList: $("#model-list"),
   btnModels: $("#btn-models"),
   modelsState: $("#models-state"),
@@ -59,6 +61,11 @@ const els = {
   logBody: $("#log-body"),
   logCount: $("#log-count"),
   btnLogClear: $("#btn-log-clear"),
+  sourceSwitch: $("#source-switch"),
+  htmlScope: $("#htmlScope"),
+  htmlMaxChars: $("#htmlMaxChars"),
+  htmlOptions: $("#html-options"),
+  toggleKey: $("#toggle-key"),
   captureFormat: $("#captureFormat"),
   jpegQuality: $("#jpegQuality"),
   jpegQualityOut: $("#jpegQualityOut"),
@@ -82,7 +89,33 @@ const els = {
 const COMMAND_LABELS = {
   "capture-and-answer": "Capture & analyze",
   "type-answer": "Type answer",
+  "toggle-quiz-source": "Switch quiz source (Image ↔ HTML)",
 };
+
+/* ------------------------------------------------------------------ */
+/* Quiz source switcher                                                */
+/* ------------------------------------------------------------------ */
+
+/** @type {"image"|"html"} */
+let captureSource = "image";
+
+function renderSource(source) {
+  captureSource = source === "html" ? "html" : "image";
+  for (const btn of els.sourceSwitch.querySelectorAll(".seg-btn")) {
+    const on = btn.dataset.source === captureSource;
+    btn.setAttribute("aria-checked", String(on));
+    btn.tabIndex = on ? 0 : -1;
+  }
+  els.htmlOptions.style.opacity = captureSource === "html" ? "" : "0.55";
+  els.modelHint.textContent =
+    captureSource === "html" ? "(any chat model — vision not required)" : "(must accept image input)";
+}
+
+async function chooseSource(source) {
+  if (source === captureSource) return;
+  renderSource(source);
+  await persist({ captureSource: source });
+}
 
 /* Provider presets come from lib/providers.js — one verified list shared
    with the worker, the popup and the README. */
@@ -145,6 +178,9 @@ async function hydrate() {
   els.maxOutputTokens.value = s.maxOutputTokens;
   els.maxImageEdge.value = s.maxImageEdge;
   els.extraInstructions.value = s.extraInstructions;
+  renderSource(s.captureSource);
+  els.htmlScope.value = s.htmlScope || "viewport";
+  els.htmlMaxChars.value = s.htmlMaxChars;
   els.captureFormat.value = s.captureFormat;
   els.jpegQuality.value = Math.round(s.jpegQuality * 100);
   els.typingDelayMs.value = s.typingDelayMs;
@@ -219,6 +255,9 @@ function currentSnapshot() {
     maxImageEdge: Math.max(0, Number(els.maxImageEdge.value) || 0),
     requestTimeoutMs: DEFAULT_SETTINGS.requestTimeoutMs,
     extraInstructions: els.extraInstructions.value,
+    captureSource,
+    htmlScope: els.htmlScope.value,
+    htmlMaxChars: Math.max(1000, Number(els.htmlMaxChars.value) || DEFAULT_SETTINGS.htmlMaxChars),
     captureFormat: els.captureFormat.value,
     jpegQuality: Number(els.jpegQuality.value) / 100,
     typingDelayMs: Number(els.typingDelayMs.value),
@@ -403,12 +442,34 @@ function sampleQuizImage() {
   return canvas.toDataURL("image/jpeg", 0.9);
 }
 
+/** The same sample quiz as a cleaned HTML extract (what page-extractor.js emits). */
+function sampleQuizHtml() {
+  return [
+    "<h2>Geography Quiz — Question 3 of 10</h2>",
+    "<p>What is the capital city of France?</p>",
+    "<ul>",
+    '<li><label><input type="radio" name="q3" value="a"> A. Rome</label></li>',
+    '<li><label><input type="radio" name="q3" value="b"> B. Paris</label></li>',
+    '<li><label><input type="radio" name="q3" value="c"> C. Madrid</label></li>',
+    '<li><label><input type="radio" name="q3" value="d"> D. Berlin</label></li>',
+    "</ul>",
+    '<input type="text" name="answer" placeholder="Type your answer here…">',
+    '<button type="submit">Submit</button>',
+  ].join("\n");
+}
+
 els.btnDiagnose.addEventListener("click", async () => {
-  setResult("Running the sample quiz through the analysis pipeline…");
+  const viaHtml = captureSource === "html";
+  setResult(`Running the sample quiz (${viaHtml ? "HTML" : "image"} source) through the analysis pipeline…`);
   els.btnDiagnose.disabled = true;
   try {
     await prepareForCall();
-    const res = await askWorker("QUIZKEY_ANALYZE_IMAGE", { dataUrl: sampleQuizImage() });
+    const res = viaHtml
+      ? await askWorker("QUIZKEY_ANALYZE_HTML", {
+          html: sampleQuizHtml(),
+          meta: { title: "Geography Quiz", url: "https://example.test/quiz/3", scope: "viewport" },
+        })
+      : await askWorker("QUIZKEY_ANALYZE_IMAGE", { dataUrl: sampleQuizImage() });
     if (res?.ok) {
       const a = res.analysis;
       const best = a.inputKind === "choice"
@@ -416,7 +477,7 @@ els.btnDiagnose.addEventListener("click", async () => {
         : a.answerText;
       const verdict = /paris/i.test(best || "") ? "✓ Pipeline works." : "⚠ Pipeline works but the model answered unexpectedly:";
       setResult(
-        `${verdict}\nModel: ${a.model} (${a.apiStyle} API)\nQuestion read: ${a.question || "—"}\nAnswer: ${best || "—"} (${Math.round((a.confidence || 0) * 100)}% confident)` +
+        `${verdict}\nModel: ${a.model} (${a.apiStyle} API · ${a.source || (viaHtml ? "html" : "image")} source)\nQuestion read: ${a.question || "—"}\nAnswer: ${best || "—"} (${Math.round((a.confidence || 0) * 100)}% confident)` +
           (a.explanation ? `\n${a.explanation}` : ""),
         "ok"
       );
@@ -560,6 +621,9 @@ async function renderShortcutEditor() {
   els.shortcutEditor.innerHTML = "";
   const canUpdate = typeof chrome.commands.update === "function";
 
+  const toggleCmd = commands.find((c) => c.name === "toggle-quiz-source");
+  if (els.toggleKey) els.toggleKey.textContent = toggleCmd?.shortcut || "Not set";
+
   for (const cmd of commands.filter((c) => COMMAND_LABELS[c.name])) {
     const row = document.createElement("div");
     row.className = "shortcut-edit-row";
@@ -662,6 +726,28 @@ function bind() {
     const showing = els.apiKey.type === "text";
     els.apiKey.type = showing ? "password" : "text";
     els.btnToggleKey.textContent = showing ? "Show" : "Hide";
+  });
+
+  els.sourceSwitch.addEventListener("click", (e) => {
+    const btn = e.target.closest?.(".seg-btn");
+    if (btn?.dataset.source) void chooseSource(btn.dataset.source);
+  });
+  els.sourceSwitch.addEventListener("keydown", (e) => {
+    if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) return;
+    e.preventDefault();
+    const next = captureSource === "image" ? "html" : "image";
+    void chooseSource(next);
+    els.sourceSwitch.querySelector(`[data-source="${next}"]`)?.focus();
+  });
+  // Flipped from the popup or Alt+S while this page is open → mirror it.
+  onSettingsChanged((settings) => {
+    if (settings?.captureSource && settings.captureSource !== captureSource) renderSource(settings.captureSource);
+  });
+  els.htmlScope.addEventListener("change", () => void persist({ htmlScope: els.htmlScope.value }));
+  els.htmlMaxChars.addEventListener("change", () => {
+    const v = Math.max(1000, Number(els.htmlMaxChars.value) || DEFAULT_SETTINGS.htmlMaxChars);
+    els.htmlMaxChars.value = v;
+    void persist({ htmlMaxChars: v });
   });
 
   els.captureFormat.addEventListener("change", () => void persist({ captureFormat: els.captureFormat.value }));

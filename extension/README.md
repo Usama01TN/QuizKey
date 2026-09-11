@@ -1,9 +1,9 @@
 # QuizKey — AI Quiz Assistant (Manifest V3)
 
-Press a keyboard shortcut → QuizKey screenshots the visible tab, sends it to a
-vision AI model, detects the quiz question and answers, then types the best
-answer into the page with **realistic, per-character keyboard events** — never
-a paste.
+Press a keyboard shortcut → QuizKey captures the quiz — **as a screenshot or as
+the page's HTML, your choice** — sends it to an AI model, detects the question
+and answers, then types the best answer into the page with **realistic,
+per-character keyboard events** — never a paste.
 
 > Use responsibly and respect the academic-integrity and site policies that
 > apply to you.
@@ -20,6 +20,7 @@ extension/
 ├── content/
 │   ├── content-script.js       # Message router (background ↔ DOM modules)
 │   ├── dom-detector.js         # Finds question, answer options & input fields
+│   ├── page-extractor.js       # "HTML" source: cleaned DOM extract of the visible quiz
 │   ├── typing-simulator.js     # Per-character keydown/keypress/input/keyup stream
 │   ├── overlay.js              # In-page status/result/error UI
 │   └── overlay.css             # Namespaced overlay styles (qk-*)
@@ -39,10 +40,12 @@ extension/
 ### Data flow
 
 ```
-Alt+Q ─► commands API ─► service worker ─► tabs.captureVisibleTab
+Alt+Q ─► commands API ─► service worker ─► source switcher
+                             ├─ image? ─► tabs.captureVisibleTab ─► downscale
+                             └─ html?  ─► content-script ─► page-extractor (cleaned DOM)
                                      │
                                      ▼
-               ai-client.js ──► vision model ──► validated JSON
+               ai-client.js ──► AI model ──► validated JSON
                                      │
                     saveResult ◄─────┘
                                      ▼
@@ -68,9 +71,39 @@ Alt+A ─► service worker ─► stored result ─► content-script
    - confirm/adjust the base URL and model
    - tune typing delay & capture format
 
+## Quiz source switcher: Image or HTML
+
+QuizKey can feed the model two kinds of input. Pick one with the **Image / HTML**
+switcher at the top of the popup, in **Settings → Quiz source**, or flip it on the
+fly with `Alt+S` (a toast confirms which source is active).
+
+| | **Image** (default) | **HTML** |
+| --- | --- | --- |
+| What is sent | A downscaled screenshot of the visible tab | A cleaned HTML extract of the quiz: headings, text, `<input type="radio">`, `<label>`, `<textarea>`, `<button>`, `role="radio"` widgets… |
+| Model requirement | Vision-capable | **Any** chat model (text-only local models work) |
+| Cost / speed | More tokens, image upload | Usually a few thousand characters — cheaper and faster |
+| Strengths | Sees exactly what you see: images, canvas, embedded PDFs, math rendered as pictures | Exact text (no OCR errors), reads visually-hidden radio inputs, works when the question is long |
+| Limits | Small text, dense pages | Can't read questions that are themselves images; needs the content script (not on restricted pages) |
+
+How the HTML extract is scoped (Settings → Quiz source):
+
+- **Selection first** — if you select ≥ 15 characters on the page, only that part is
+  analyzed. Handy on pages that show several questions at once.
+- **What's on screen** (default) — everything intersecting the viewport, mirroring the
+  screenshot. Falls back to the whole page if nothing meaningful is on screen.
+- **Whole page** — the full document, for long scrolling quizzes.
+- **Max extract size** caps the characters sent (default 12 000); the model is told when
+  the extract was truncated.
+
+Scripts, styles, layout wrappers, ids, classes, hidden fields, `display:none` decoys and
+QuizKey's own overlay are stripped before anything leaves the tab. The result is stored
+with the analysis (`analysis.source`) and shown in the popup as *via HTML* / *via image*.
+**Run diagnostic** in settings follows the active source, so you can verify a text-only
+model with the HTML pipeline before using it on a real quiz.
+
 ### Configure the keyboard shortcuts
 
-- Default: `Alt+Q` capture & analyze, `Alt+A` type answer.
+- Default: `Alt+Q` capture & analyze, `Alt+A` type answer, `Alt+S` switch quiz source.
 - Rebind from the Options page (supported browsers) or directly at
   `chrome://extensions/shortcuts`.
 - Constraints set by Chromium: must include `Ctrl` or `Alt` (optionally
@@ -143,9 +176,12 @@ of the last requests (keys are never logged).
 | `requestTimeoutMs` | number | `90000` | Abort threshold — reasoning models can take a while. |
 | `maxOutputTokens` | number | `4096` | Completion budget (sent as `max_tokens`, or `max_completion_tokens` when the provider demands it). Must be large for reasoning models. |
 | `maxImageEdge` | number | `1600` | The screenshot is downscaled in the worker so its longest edge is ≤ this — smaller upload, fewer vision tokens. `0` disables. |
-| `model` | string | `gpt-4o-mini` | Any vision-capable chat model. Empty = first model the server lists (local servers). |
+| `model` | string | `gpt-4o-mini` | Any chat model; must accept images when `captureSource` is `image`. Empty = first model the server lists (local servers). |
+| `captureSource` | `"image"\|"html"` | `image` | Quiz source: screenshot of the tab, or a cleaned extract of the page HTML. |
+| `htmlScope` | `"viewport"\|"page"` | `viewport` | HTML source: what's on screen, or the whole document. A text selection always takes precedence. |
+| `htmlMaxChars` | number | `12000` | HTML source: character cap for the extract sent to the model. |
 | `requestTimeoutMs` | number | `45000` | Hard abort for AI requests. |
-| `captureFormat` | `"png"\|"jpeg"` | `jpeg` | Screenshot encoding. |
+| `captureFormat` | `"png"\|"jpeg"` | `jpeg` | Screenshot encoding (Image source only). |
 | `jpegQuality` | number | `0.85` | 0.1 – 1.0, ignored for PNG. |
 | `typingDelayMs` | number | `60` | Base delay between keystrokes. |
 | `typingJitterMs` | number | `45` | Random 0…n ms added per keystroke. |
@@ -175,7 +211,7 @@ Each character dispatches the exact sequence a physical keyboard produces:
 Every failure path produces a typed `QuizKeyError` with a stable code and a
 user-facing message shown as an on-page toast and in the popup:
 
-`CAPTURE_FAILED` · `API_KEY_MISSING` · `API_TIMEOUT` · `API_REQUEST_FAILED` ·
+`CAPTURE_FAILED` · `EXTRACT_FAILED` · `API_KEY_MISSING` · `API_TIMEOUT` · `API_REQUEST_FAILED` ·
 `NO_QUESTION` · `NO_ANSWER` · `NO_RESULT` · `NO_INPUT` · `MESSAGING_FAILED` ·
 `RESTRICTED_PAGE` …
 
@@ -225,3 +261,9 @@ QuizKey classifies the tab and tells you the exact cause. The cases:
   a stronger model (e.g. `gemini-3.8-pro`).
 - **Nothing types** — focus the target field once, then press `Alt+A`; the
   focused field always wins over heuristics.
+- **HTML source says NO_QUESTION** — the question is probably an image or canvas;
+  switch to the Image source (`Alt+S`). If several questions are on screen, select the
+  one you want first. On a fully scrolled page, set the HTML scope to *Whole page*.
+- **HTML source: "The page HTML could not be read"** — the content script isn't attached
+  (restricted page, or a tab opened before install). Reload the tab once; the Image
+  source doesn't need the content script for capture and can be used meanwhile.
