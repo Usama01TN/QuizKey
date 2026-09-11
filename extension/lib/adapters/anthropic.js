@@ -25,19 +25,17 @@ function headers(apiKey) {
 
 export function buildBody({ model, system, user, image, maxTokens }) {
   // No temperature: Claude 4.6+ / 5 reject non-default sampling parameters.
+  // `image` is optional — omitted for the HTML quiz source.
+  const content = [];
+  if (image?.base64) {
+    content.push({ type: "image", source: { type: "base64", media_type: image.mimeType, data: image.base64 } });
+  }
+  content.push({ type: "text", text: user });
   return {
     model,
     max_tokens: maxTokens,
     system,
-    messages: [
-      {
-        role: "user",
-        content: [
-          { type: "image", source: { type: "base64", media_type: image.mimeType, data: image.base64 } },
-          { type: "text", text: user },
-        ],
-      },
-    ],
+    messages: [{ role: "user", content }],
   };
 }
 

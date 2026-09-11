@@ -117,6 +117,46 @@ kbd {
   color: var(--lime);
 }
 
+/* ---------- quiz source switcher (Image / HTML) ---------- */
+.source { padding: 2px 16px 8px; }
+.source-head { display: flex; align-items: center; justify-content: space-between; }
+.source-head kbd { font-size: 10px; padding: 1px 6px; color: var(--muted); margin-bottom: 8px; }
+.seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+}
+.seg-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.seg-btn svg { width: 14px; height: 14px; }
+.seg-btn:hover { color: var(--text); }
+.seg-btn[aria-checked="true"] {
+  background: var(--lime-dim);
+  border-color: rgba(180, 240, 60, 0.45);
+  color: var(--lime);
+}
+.seg-btn:focus-visible { outline: 2px solid var(--lime); outline-offset: 1px; }
+.seg-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.source-desc { margin: 8px 0 0; font-size: 11.5px; line-height: 1.45; color: var(--muted); }
+
 .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 6px 16px 12px; }
 .btn {
   display: flex;
@@ -175,7 +215,8 @@ kbd {
   flex-direction: column;
   gap: 2px;
 }
-.result-answer-label { font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
+.result-answer-label { font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); display: flex; justify-content: space-between; }
+.result-source { color: var(--viol-text); letter-spacing: 0.08em; }
 .result-answer-text { font-weight: 750; color: var(--lime-text); }
 .conf { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
 .conf-track { flex: 1; height: 5px; border-radius: 99px; background: var(--track); overflow: hidden; }

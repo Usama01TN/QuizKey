@@ -1,7 +1,7 @@
 /**
  * content/content-script.js
- * Thin message router that wires the background worker to the three DOM
- * modules (DOMDetector, TypingSimulator, Overlay) and keeps the answer
+ * Thin message router that wires the background worker to the DOM modules
+ * (DOMDetector, PageExtractor, TypingSimulator, Overlay) and keeps the answer
  * state local to the tab. It owns no business logic itself.
  */
 (function registerContentScript() {
@@ -11,9 +11,9 @@
   if (window.__QUIZKEY_INJECTED__) return;
   window.__QUIZKEY_INJECTED__ = true;
 
-  const { DOMDetector, TypingSimulator, Overlay } = window.QuizKey || {};
+  const { DOMDetector, PageExtractor, TypingSimulator, Overlay } = window.QuizKey || {};
 
-  if (!DOMDetector || !TypingSimulator || !Overlay) {
+  if (!DOMDetector || !PageExtractor || !TypingSimulator || !Overlay) {
     console.error("[QuizKey] A content module failed to load — check manifest script order.");
     return;
   }
@@ -102,6 +102,24 @@
         // be in the picture (a previous answer card would mislead the model).
         Overlay.clear();
         DOMDetector.clearHighlights();
+        sendResponse({ ok: true });
+        return false;
+
+      case "QUIZKEY_EXTRACT_PAGE":
+        // Quiz source "html": serialize the visible quiz for the model.
+        try {
+          const { html, meta } = PageExtractor.extract(message.options || {});
+          sendResponse({ ok: true, html, meta });
+        } catch (err) {
+          console.error("[QuizKey] Page extraction failed:", err);
+          sendResponse({ ok: false, error: String(err?.message || err) });
+        }
+        return false;
+
+      case "QUIZKEY_TOAST":
+        Overlay.setPosition(message.position || "top-right");
+        if (message.theme) Overlay.setTheme(message.theme);
+        Overlay.showToast(message.text || "", message.tone || "info", message.ms || 3200);
         sendResponse({ ok: true });
         return false;
 

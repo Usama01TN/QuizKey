@@ -14,7 +14,10 @@
  * @property {number}  requestTimeoutMs  Abort threshold for AI requests (reasoning models are slow)
  * @property {number}  maxOutputTokens   Completion budget — must be large for reasoning models
  * @property {number}  maxImageEdge      Screenshot is downscaled so its longest edge ≤ this (0 = off)
- * @property {"png"|"jpeg"} captureFormat
+ * @property {"image"|"html"} captureSource  Quiz source: screenshot (vision model) or cleaned page HTML (any model)
+ * @property {"viewport"|"page"} htmlScope  HTML source: what is on screen, or the whole document
+ * @property {number}  htmlMaxChars      HTML source: size cap for the extract sent to the model
+ * @property {"png"|"jpeg"} captureFormat  Image source only
  * @property {number}  jpegQuality       0.1 – 1.0 (ignored for png)
  * @property {number}  typingDelayMs     Base delay between keystrokes
  * @property {number}  typingJitterMs    Random 0..n ms added per keystroke
@@ -36,6 +39,9 @@ export const DEFAULT_SETTINGS = Object.freeze({
   requestTimeoutMs: 90000,
   maxOutputTokens: 4096,
   maxImageEdge: 1600,
+  captureSource: "image",
+  htmlScope: "viewport",
+  htmlMaxChars: 12000,
   captureFormat: "jpeg",
   jpegQuality: 0.85,
   typingDelayMs: 60,

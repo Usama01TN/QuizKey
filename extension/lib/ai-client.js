@@ -4,7 +4,8 @@
  * page. Picks the right API dialect for the configured endpoint and turns
  * the model's reply into the analysis object the extension consumes.
  *
- *   analyzeScreenshot({ dataUrl, settings })  → analysis
+ *   analyzeScreenshot({ dataUrl, settings })  → analysis   (source: image)
+ *   analyzePageHtml({ html, meta, settings }) → analysis   (source: html)
  *   testConnection(settings)                  → human-readable summary
  *   listModels(settings)                      → string[]
  *
@@ -12,7 +13,7 @@
  */
 
 import { QuizKeyError, ErrorCodes } from "./errors.js";
-import { SYSTEM_PROMPT, buildUserText } from "./prompts.js";
+import { SYSTEM_PROMPT, SYSTEM_PROMPT_HTML, buildUserText, buildHtmlUserText } from "./prompts.js";
 import { analysisFromReply } from "./analysis.js";
 import { normalizeBaseUrl, splitDataUrl, DEFAULT_TIMEOUT_MS } from "./http.js";
 import { resolveApiStyle, hasUsableCredentials, getProvider, detectProvider } from "./providers.js";
@@ -59,21 +60,17 @@ function prepared(settings) {
   return base;
 }
 
-/**
- * Analyze a page screenshot with a vision model.
- * @param {{ dataUrl: string, settings: import('./storage.js').QuizKeySettings }} args
- */
-export async function analyzeScreenshot({ dataUrl, settings }) {
+/** Shared request/parse path for both quiz sources. */
+async function analyze({ settings, image, system, user, source }) {
   const base = prepared(settings);
   const { adapter, style } = adapterFor(settings);
-  const image = { ...splitDataUrl(dataUrl), dataUrl };
 
   const reply = await adapter.complete({
     base,
     settings,
-    image,
-    system: SYSTEM_PROMPT,
-    user: buildUserText(settings.extraInstructions),
+    image: image || null,
+    system,
+    user,
     maxTokens: Number(settings.maxOutputTokens) || DEFAULT_MAX_OUTPUT_TOKENS,
     timeoutMs: Number(settings.requestTimeoutMs) || DEFAULT_TIMEOUT_MS,
   });
@@ -81,7 +78,42 @@ export async function analyzeScreenshot({ dataUrl, settings }) {
   const analysis = analysisFromReply(reply);
   analysis.model = reply.model || settings.model;
   analysis.apiStyle = style;
+  analysis.source = source;
   return analysis;
+}
+
+/**
+ * Analyze a page screenshot with a vision model (quiz source: "image").
+ * @param {{ dataUrl: string, settings: import('./storage.js').QuizKeySettings }} args
+ */
+export async function analyzeScreenshot({ dataUrl, settings }) {
+  const image = { ...splitDataUrl(dataUrl), dataUrl };
+  return analyze({
+    settings,
+    image,
+    system: SYSTEM_PROMPT,
+    user: buildUserText(settings.extraInstructions),
+    source: "image",
+  });
+}
+
+/**
+ * Analyze a cleaned HTML extract of the page (quiz source: "html").
+ * Works with any chat model — vision capability is not required.
+ * @param {{ html: string, meta?: object, settings: import('./storage.js').QuizKeySettings }} args
+ */
+export async function analyzePageHtml({ html, meta = {}, settings }) {
+  const text = String(html || "").trim();
+  if (!text) {
+    throw new QuizKeyError(ErrorCodes.EXTRACT_FAILED, "Empty HTML extract");
+  }
+  return analyze({
+    settings,
+    image: null,
+    system: SYSTEM_PROMPT_HTML,
+    user: buildHtmlUserText(text, meta, settings.extraInstructions),
+    source: "html",
+  });
 }
 
 /** List the models the endpoint serves (for the settings page picker). */

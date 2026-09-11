@@ -5,6 +5,7 @@
  * keyboard shortcuts.
  */
 import { classifyPageAccess, hasFileUrlsPermission } from "../lib/page-access.js";
+import { setSettings, onSettingsChanged } from "../lib/storage.js";
 import { initTheme } from "../lib/theme.js";
 
 (() => {
@@ -16,6 +17,11 @@ import { initTheme } from "../lib/theme.js";
     statusPill: $("#status-pill"),
     shortcutList: $("#shortcut-list"),
     btnCapture: $("#btn-capture"),
+    captureTitle: $("#capture-title"),
+    sourceSwitch: $("#source-switch"),
+    sourceDesc: $("#source-desc"),
+    sourceHintKey: $("#source-hint-key"),
+    resultSource: $("#result-source"),
     btnType: $("#btn-type"),
     notice: $("#notice"),
     result: $("#result"),
@@ -28,6 +34,37 @@ import { initTheme } from "../lib/theme.js";
   };
 
   let activeTabId = null;
+  /** @type {"image"|"html"} */
+  let captureSource = "image";
+
+  const SOURCE_COPY = {
+    image: {
+      title: "Capture & analyze",
+      desc: "Screenshots the visible tab — needs a vision-capable model.",
+    },
+    html: {
+      title: "Read page & analyze",
+      desc: "Sends a cleaned extract of the visible quiz HTML — works with any text model. Select text on the page to analyze just that part.",
+    },
+  };
+
+  /** Reflect the active quiz source in the switcher + capture button. */
+  function renderSource(source) {
+    captureSource = source === "html" ? "html" : "image";
+    for (const btn of els.sourceSwitch.querySelectorAll(".seg-btn")) {
+      const on = btn.dataset.source === captureSource;
+      btn.setAttribute("aria-checked", String(on));
+      btn.tabIndex = on ? 0 : -1;
+    }
+    els.captureTitle.textContent = SOURCE_COPY[captureSource].title;
+    els.sourceDesc.textContent = SOURCE_COPY[captureSource].desc;
+  }
+
+  async function chooseSource(source) {
+    if (source === captureSource) return;
+    renderSource(source);
+    await setSettings({ captureSource: source }).catch(() => {});
+  }
 
   /* ---------------------------------------------------------------- */
 
@@ -68,6 +105,7 @@ import { initTheme } from "../lib/theme.js";
     const pct = Math.round((analysis.confidence || 0) * 100);
     els.resultConf.style.width = `${pct}%`;
     els.resultConfNum.textContent = `${pct}% confident`;
+    els.resultSource.textContent = analysis.source === "html" ? "via HTML" : analysis.source === "image" ? "via image" : "";
   }
 
   async function renderShortcuts() {
@@ -77,6 +115,7 @@ import { initTheme } from "../lib/theme.js";
       const labels = {
         "capture-and-answer": "Capture & analyze",
         "type-answer": "Type answer",
+        "toggle-quiz-source": "Switch source",
       };
       for (const cmd of commands.filter((c) => labels[c.name])) {
         const row = document.createElement("div");
@@ -89,6 +128,7 @@ import { initTheme } from "../lib/theme.js";
         key.textContent = cmd.shortcut || "Not set";
         if (cmd.name === "capture-and-answer") $("#capture-hint").textContent = cmd.shortcut || "Not set";
         if (cmd.name === "type-answer") $("#type-hint").textContent = cmd.shortcut || "Not set";
+        if (cmd.name === "toggle-quiz-source") els.sourceHintKey.textContent = cmd.shortcut || "Not set";
 
         row.append(name, key);
         els.shortcutList.appendChild(row);
@@ -120,6 +160,7 @@ import { initTheme } from "../lib/theme.js";
     }
 
     els.modelLabel.textContent = `${state.settings.model || "auto model"} · ${state.apiStyle || "openai"}`;
+    renderSource(state.settings.captureSource);
     renderAnalysis(state.analysis);
 
     /* 1 — fully restricted pages: name the exact restriction + remedy */
@@ -165,6 +206,7 @@ import { initTheme } from "../lib/theme.js";
         type: "QUIZKEY_POPUP_ACTION",
         action,
         tabId: activeTabId,
+        source: action === "capture" ? captureSource : undefined,
       });
       if (response?.error) {
         showNotice(describeError(response));
@@ -185,6 +227,23 @@ import { initTheme } from "../lib/theme.js";
   }
 
   els.btnCapture.addEventListener("click", () => void runAction("capture"));
+
+  els.sourceSwitch.addEventListener("click", (e) => {
+    const btn = e.target.closest?.(".seg-btn");
+    if (btn?.dataset.source) void chooseSource(btn.dataset.source);
+  });
+  // Arrow keys move between the two options like a native radio group.
+  els.sourceSwitch.addEventListener("keydown", (e) => {
+    if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) return;
+    e.preventDefault();
+    const next = captureSource === "image" ? "html" : "image";
+    void chooseSource(next);
+    els.sourceSwitch.querySelector(`[data-source="${next}"]`)?.focus();
+  });
+  // Stay in sync if the source is flipped elsewhere (Alt+S or the options page).
+  onSettingsChanged((settings) => {
+    if (settings?.captureSource && settings.captureSource !== captureSource) renderSource(settings.captureSource);
+  });
   els.btnType.addEventListener("click", () => void runAction("type"));
   els.btnOptions.addEventListener("click", () => chrome.runtime.openOptionsPage());
 

@@ -9,6 +9,7 @@
 export const ErrorCodes = Object.freeze({
   NO_ACTIVE_TAB: "NO_ACTIVE_TAB",
   CAPTURE_FAILED: "CAPTURE_FAILED",
+  EXTRACT_FAILED: "EXTRACT_FAILED",
   API_KEY_MISSING: "API_KEY_MISSING",
   API_CONNECTION_FAILED: "API_CONNECTION_FAILED",
   API_REQUEST_FAILED: "API_REQUEST_FAILED",
@@ -29,6 +30,8 @@ const USER_MESSAGES = {
   NO_ACTIVE_TAB: "No active tab was found. Click the page and try again.",
   CAPTURE_FAILED:
     "The screenshot could not be captured. This page may be restricted (chrome:// pages and the Web Store cannot be captured).",
+  EXTRACT_FAILED:
+    "The page HTML could not be read. Reload the tab and try again, or switch the quiz source to Image in the QuizKey popup.",
   API_KEY_MISSING:
     "No API key configured. Open the QuizKey settings page and add your AI provider key (local servers such as Ollama / LM Studio don't need one).",
   API_CONNECTION_FAILED:
@@ -39,7 +42,7 @@ const USER_MESSAGES = {
   API_BAD_RESPONSE:
     "The AI returned an unreadable response. Try again, or switch to a vision-capable model with reliable JSON output.",
   NO_QUESTION:
-    "No quiz question was detected in the screenshot. Make sure the question is visible and try again.",
+    "No quiz question was detected in the captured content. Make sure the question is on screen and try again (or switch the quiz source between Image and HTML).",
   NO_ANSWER:
     "A question was found, but the model could not determine a confident answer.",
   NO_RESULT:
