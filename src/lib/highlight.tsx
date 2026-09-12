@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import type { Lang } from "./sources";
 
 /**
- * Tiny purpose-built tokenizer for the code explorer — no external deps.
+ * Tiny purpose-built tokenizer for the code explorer, no external deps.
  * It is intentionally approximate: it colors comments, strings, keywords,
  * numbers, calls, properties and tags, which is plenty for readability.
  */

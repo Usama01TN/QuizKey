@@ -40,11 +40,11 @@ import { initTheme } from "../lib/theme.js";
   const SOURCE_COPY = {
     image: {
       title: "Capture & analyze",
-      desc: "Screenshots the visible tab — needs a vision-capable model.",
+      desc: "Screenshots the visible tab. Needs a vision-capable model.",
     },
     html: {
       title: "Read page & analyze",
-      desc: "Sends a cleaned extract of the visible quiz HTML — works with any text model. Select text on the page to analyze just that part.",
+      desc: "Sends a cleaned extract of the visible quiz HTML. Works with any text model. Select text on the page to analyze just that part.",
     },
   };
 
@@ -100,8 +100,8 @@ import { initTheme } from "../lib/theme.js";
         : analysis.answerText;
 
     els.result.hidden = false;
-    els.resultQuestion.textContent = analysis.question || "—";
-    els.resultAnswer.textContent = best || "—";
+    els.resultQuestion.textContent = analysis.question || "-";
+    els.resultAnswer.textContent = best || "-";
     const pct = Math.round((analysis.confidence || 0) * 100);
     els.resultConf.style.width = `${pct}%`;
     els.resultConfNum.textContent = `${pct}% confident`;
@@ -134,7 +134,7 @@ import { initTheme } from "../lib/theme.js";
         els.shortcutList.appendChild(row);
       }
     } catch (_) {
-      /* commands API unavailable — leave the section empty */
+      /* commands API unavailable, leave the section empty */
     }
   }
 
@@ -163,7 +163,7 @@ import { initTheme } from "../lib/theme.js";
     renderSource(state.settings.captureSource);
     renderAnalysis(state.analysis);
 
-    /* 1 — fully restricted pages: name the exact restriction + remedy */
+    /* 1. Fully restricted pages: name the exact restriction + remedy */
     if (!access.ok) {
       setStatus("warn", access.short);
       showNotice(
@@ -175,19 +175,19 @@ import { initTheme } from "../lib/theme.js";
       return;
     }
 
-    /* 2 — allowed to use: credentials / file-grant / injection notices */
+    /* 2. Allowed to use: credentials / file-grant / injection notices */
     const needsKey = !state.hasApiKey;
     let notice = "";
     if (needsKey) {
       notice = "Add your AI API key in settings to enable capture (local servers like Ollama / LM Studio don't need one).";
     }
-    // file:// pages capture fine without the grant — typing/overlay need it
+    // file:// pages capture fine without the grant; typing/overlay need it
     if (access.kind === "file" && !access.fileAccess) {
       notice =
-        "Capture works on this file. To type answers and show the overlay here, enable file access in QuizKey Settings (“Allow access to local files”) — or Chrome’s toggle under QuizKey → Details — then reload this file.";
+        "Capture works on this file. To type answers and show the overlay here, enable file access in QuizKey Settings (“Allow access to local files”), or Chrome’s toggle under QuizKey → Details, then reload this file.";
     } else if (!needsKey && !state.pageReachable) {
       notice =
-        "QuizKey isn't attached to this tab yet (it was loaded before install). It will inject itself automatically on capture — if that fails, reload this tab once.";
+        "QuizKey isn't attached to this tab yet (it was loaded before install). It will inject itself automatically on capture. If that fails, reload this tab once.";
     }
     showNotice(notice, "info");
     setStatus(needsKey ? "warn" : "ok", needsKey ? "API key needed" : "Ready");

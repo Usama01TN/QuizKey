@@ -8,9 +8,9 @@
  * (September 2026). If you add a provider, verify the URL there first.
  *
  * API dialects (see lib/adapters/):
- *   "openai"    — POST {base}/chat/completions          Bearer key
- *   "gemini"    — POST {base}/models/{model}:generateContent   x-goog-api-key
- *   "anthropic" — POST {base}/messages                   x-api-key
+ *   "openai"    -> POST {base}/chat/completions          Bearer key
+ *   "gemini"    -> POST {base}/models/{model}:generateContent   x-goog-api-key
+ *   "anthropic" -> POST {base}/messages                   x-api-key
  */
 
 import { hostOf, pathOf, isLocalEndpoint, normalizeBaseUrl } from "./http.js";
@@ -55,7 +55,7 @@ export const PROVIDERS = [
     needsKey: true,
     keyUrl: "https://console.anthropic.com/settings/keys",
     docsUrl: "https://docs.claude.com/en/api/messages",
-    note: "Native Messages API. All current Claude models accept images. Sonnet 5 rejects temperature — QuizKey never sends it.",
+    note: "Native Messages API. All current Claude models accept images. Sonnet 5 rejects temperature, so QuizKey never sends it.",
     manifestGranted: true,
   },
   {
@@ -81,7 +81,7 @@ export const PROVIDERS = [
     needsKey: true,
     keyUrl: "https://aistudio.google.com/apikey",
     docsUrl: "https://ai.google.dev/gemini-api/docs/openai",
-    note: "Same key as the native preset. Google marks this layer as beta — use the native preset if something is off.",
+    note: "Same key as the native preset. Google marks this layer as beta; use the native preset if something is off.",
     manifestGranted: true,
   },
   {
@@ -206,7 +206,7 @@ export function isAzure(baseUrl) {
   return host.endsWith(".openai.azure.com") || host.endsWith(".cognitiveservices.azure.com");
 }
 
-/** Local servers usually run without auth — only remote ones need a key. */
+/** Local servers usually run without auth; only remote ones need a key. */
 export function requiresApiKey(settings) {
   return !isLocalEndpoint(settings?.apiBaseUrl);
 }

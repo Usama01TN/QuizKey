@@ -1,6 +1,6 @@
 /**
  * content/dom-detector.js
- * Locates the quiz question, the answer options and — most importantly —
+ * Locates the quiz question, the answer options and, most importantly,
  * the editable field that should receive the typed answer.
  *
  * Content scripts can't use ES module imports, so every content module

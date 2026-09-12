@@ -14,7 +14,7 @@
   const { DOMDetector, PageExtractor, TypingSimulator, Overlay } = window.QuizKey || {};
 
   if (!DOMDetector || !PageExtractor || !TypingSimulator || !Overlay) {
-    console.error("[QuizKey] A content module failed to load — check manifest script order.");
+    console.error("[QuizKey] A content module failed to load. Check manifest script order.");
     return;
   }
 
@@ -36,7 +36,7 @@
 
   async function typePendingAnswer() {
     if (!pendingAnswer) {
-      Overlay.showToast("Nothing to type yet — capture the page first.", "info");
+      Overlay.showToast("Nothing to type yet. Capture the page first.", "info");
       chrome.runtime.sendMessage({ type: "QUIZKEY_LOOKUP_RESULT" }).catch(() => {});
       return;
     }
@@ -55,7 +55,7 @@
           Overlay.showToast("Answer selected.", "success", 2500);
           return;
         }
-        // No clickable option matched — fall through to typing the text.
+        // No clickable option matched, so fall through to typing the text.
       }
 
       const field = DOMDetector.findInputField();
@@ -98,7 +98,7 @@
         return false;
 
       case "QUIZKEY_HIDE_OVERLAY":
-        // The worker is about to screenshot the tab — nothing of ours may
+        // The worker is about to screenshot the tab, so nothing of ours may
         // be in the picture (a previous answer card would mislead the model).
         Overlay.clear();
         DOMDetector.clearHighlights();

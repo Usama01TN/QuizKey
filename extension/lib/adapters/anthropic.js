@@ -5,7 +5,7 @@
  * Request:  POST {base}/messages
  * Auth:     x-api-key: <key>, anthropic-version: 2023-06-01
  * Browser:  anthropic-dangerous-direct-browser-access: true  (required for
- *           CORS from extensions/browsers — the key stays in the worker)
+ *           CORS from extensions/browsers; the key stays in the worker)
  * Docs:     https://docs.claude.com/en/api/messages
  */
 
@@ -25,7 +25,7 @@ function headers(apiKey) {
 
 export function buildBody({ model, system, user, image, maxTokens }) {
   // No temperature: Claude 4.6+ / 5 reject non-default sampling parameters.
-  // `image` is optional — omitted for the HTML quiz source.
+  // `image` is optional: omitted for the HTML quiz source.
   const content = [];
   if (image?.base64) {
     content.push({ type: "image", source: { type: "base64", media_type: image.mimeType, data: image.base64 } });

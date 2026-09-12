@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "QuizKey — AI Quiz Assistant",
+  "name": "QuizKey: AI Quiz Assistant",
   "version": "1.2.0",
-  "description": "Capture any quiz with a keyboard shortcut — as a screenshot or as page HTML — analyze it with an AI model, and type the answer with realistic, per-character keyboard events.",
+  "description": "Capture any quiz with a keyboard shortcut (as a screenshot or as page HTML), analyze it with an AI model, and type the answer with realistic, per-character keyboard events.",
   "minimum_chrome_version": "102",
   "icons": {
     "16": "icons/icon.png",
@@ -50,7 +50,7 @@
     }
   ],
   "action": {
-    "default_title": "QuizKey — AI Quiz Assistant",
+    "default_title": "QuizKey: AI Quiz Assistant",
     "default_popup": "popup/popup.html",
     "default_icon": {
       "16": "icons/icon.png",

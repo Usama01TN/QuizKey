@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>QuizKey — Settings</title>
+    <title>QuizKey Settings</title>
     <script src="../lib/theme-boot.js"></script>
     <link rel="stylesheet" href="options.css" />
   </head>
@@ -31,7 +31,7 @@
       <section class="card">
         <h2><span class="num">01</span> AI provider</h2>
         <p class="card-desc">
-          Pick a provider and paste its key. QuizKey speaks three API dialects natively —
+          Pick a provider and paste its key. QuizKey speaks three API dialects natively:
           OpenAI Chat Completions (also OpenRouter, OmniRoute, LM&nbsp;Studio, Ollama, Azure, vLLM…),
           Google Gemini and Anthropic Claude. The key is stored in <code>chrome.storage.local</code>
           only and is sent solely to the configured endpoint.
@@ -94,7 +94,7 @@
         </div>
 
         <label class="field field-wide">
-          <span>Extra instructions <em>(optional — appended to the analysis prompt)</em></span>
+          <span>Extra instructions <em>(optional, appended to the analysis prompt)</em></span>
           <textarea id="extraInstructions" rows="2" placeholder="e.g. Prefer the shortest correct answer. The course is biology 101."></textarea>
         </label>
 
@@ -105,8 +105,8 @@
         </div>
         <p class="field-note" id="diagnose-note">
           <strong>Run diagnostic</strong> sends a built-in sample quiz through the exact
-          capture → analyze pipeline the shortcut uses — as an image or as HTML, following the
-          quiz source below — and shows the parsed answer or the provider's real error.
+          capture → analyze pipeline the shortcut uses (as an image or as HTML, following the
+          quiz source below) and shows the parsed answer or the provider's real error.
         </p>
 
         <details class="log" id="call-log">
@@ -128,14 +128,14 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 15-4.5-4.5L9 18"/></svg>
             <span class="seg-text">
               <strong>Image</strong>
-              <small>Screenshot of the visible tab. Sees everything a human sees — including images, canvas and PDFs — but needs a vision model and costs more tokens.</small>
+              <small>Screenshot of the visible tab. Sees everything a human sees, including images, canvas and PDFs, but needs a vision model and costs more tokens.</small>
             </span>
           </button>
           <button type="button" class="seg-btn" data-source="html" role="radio" aria-checked="false">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg>
             <span class="seg-text">
               <strong>HTML</strong>
-              <small>Cleaned extract of the quiz markup (question, options, fields). Works with any text model, is cheaper and exact for text — but can't read questions rendered as images.</small>
+              <small>Cleaned extract of the quiz markup (question, options, fields). Works with any text model, is cheaper and exact for text, but can't read questions rendered as images.</small>
             </span>
           </button>
         </div>
@@ -144,8 +144,8 @@
           <label class="field">
             <span>HTML scope <em>(a text selection on the page always wins)</em></span>
             <select id="htmlScope">
-              <option value="viewport">What's on screen — like the screenshot</option>
-              <option value="page">Whole page — for long or scrolled quizzes</option>
+              <option value="viewport">What's on screen (like the screenshot)</option>
+              <option value="page">Whole page (for long or scrolled quizzes)</option>
             </select>
           </label>
           <label class="field">
@@ -162,8 +162,8 @@
           <label class="field">
             <span>Image format</span>
             <select id="captureFormat">
-              <option value="jpeg">JPEG — smaller, faster to upload</option>
-              <option value="png">PNG — lossless, larger</option>
+              <option value="jpeg">JPEG (smaller, faster to upload)</option>
+              <option value="png">PNG (lossless, larger)</option>
             </select>
           </label>
           <label class="field">
@@ -177,8 +177,8 @@
       <section class="card">
         <h2><span class="num">04</span> Typing simulation</h2>
         <p class="card-desc">
-          Answers are replayed as real keyboard events — <code>keydown → keypress →
-          beforeinput → input → keyup</code> — one character at a time, never pasted.
+          Answers are replayed as real keyboard events (<code>keydown → keypress →
+          beforeinput → input → keyup</code>), one character at a time, never pasted.
         </p>
         <div class="grid">
           <label class="field">
@@ -210,7 +210,7 @@
             <span class="toggle-ui"></span>
             <span class="toggle-text">
               <strong>Auto-type after analysis</strong>
-              <small>Skip the second shortcut — type as soon as the answer arrives.</small>
+              <small>Skip the second shortcut: type as soon as the answer arrives.</small>
             </span>
           </label>
           <label class="toggle">
@@ -254,11 +254,11 @@
         <h2><span class="num">06</span> Local files (file://)</h2>
         <p class="card-desc">
           QuizKey can capture local quiz files out of the box, but typing and the on-page
-          overlay need your permission for local files. Grant it here — one click, then
+          overlay need your permission for local files. Grant it here with one click, then
           re-open (or reload) the file. Note: Chrome only shows its own
           <code>"Allow access to file URLs"</code> toggle (under
           <code>chrome://extensions → QuizKey → Details</code>) when the extension declares
-          URL permissions — if you don't see it, this button is the equivalent official path.
+          URL permissions. If you don't see it, this button is the equivalent official path.
         </p>
         <div class="row">
           <button id="btn-file-access" class="btn">Enable file access</button>

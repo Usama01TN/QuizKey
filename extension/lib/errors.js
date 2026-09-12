@@ -46,7 +46,7 @@ const USER_MESSAGES = {
   NO_ANSWER:
     "A question was found, but the model could not determine a confident answer.",
   NO_RESULT:
-    "Nothing to type yet — press the capture shortcut first to analyze the page.",
+    "Nothing to type yet. Press the capture shortcut first to analyze the page.",
   NO_INPUT:
     "No visible, editable input field was found on this page. Click the field yourself, then re-trigger typing.",
   TYPING_FAILED: "The answer could not be typed into the page.",
@@ -61,10 +61,10 @@ const USER_MESSAGES = {
 
 export class QuizKeyError extends Error {
   /**
-   * @param {string} code — one of ErrorCodes
-   * @param {string} [detail] — technical detail for logs
-   * @param {unknown} [cause] — original error, if any
-   * @param {string} [userMessageOverride] — replaces the table message
+   * @param {string} code - one of ErrorCodes
+   * @param {string} [detail] - technical detail for logs
+   * @param {unknown} [cause] - original error, if any
+   * @param {string} [userMessageOverride] - replaces the table message
    *   (used by page-access diagnostics that know the exact remedy)
    */
   constructor(code, detail = "", cause = undefined, userMessageOverride = undefined) {

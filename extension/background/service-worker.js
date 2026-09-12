@@ -24,7 +24,7 @@ import {
 import { QuizKeyError, ErrorCodes, normalizeError } from "../lib/errors.js";
 import { classifyPageAccess, hasFileUrlsPermission } from "../lib/page-access.js";
 
-/** Content bundle in manifest load order — used for on-demand injection. */
+/** Content bundle in manifest load order; used for on-demand injection. */
 const CONTENT_STYLE = ["content/overlay.css"];
 const CONTENT_FILES = [
   "content/dom-detector.js",
@@ -75,7 +75,7 @@ const badge = {
 
 /**
  * Inject the content bundle on demand. Needed for tabs that were loaded
- * before the extension was installed/reloaded — their content scripts are
+ * before the extension was installed/reloaded: their content scripts are
  * missing until refresh, but chrome.scripting can attach them right now.
  */
 async function injectContentScripts(tabId) {
@@ -87,7 +87,7 @@ async function injectContentScripts(tabId) {
     await new Promise((r) => setTimeout(r, 80)); // let listeners register
     return true;
   } catch (_) {
-    return false; // restricted page — the access guard reports the real reason
+    return false; // restricted page; the access guard reports the real reason
   }
 }
 
@@ -107,12 +107,12 @@ async function sendToTab(tabId, message) {
   }
 }
 
-/** Best-effort — never throws. Used for progress + error reporting. */
+/** Best-effort and never throws. Used for progress + error reporting. */
 async function notifyTab(tabId, message) {
   try {
     await chrome.tabs.sendMessage(tabId, message);
   } catch (_) {
-    /* restricted page or script not ready — the badge still communicates */
+    /* restricted page or script not ready; the badge still communicates */
   }
 }
 
@@ -122,7 +122,7 @@ async function notifyTab(tabId, message) {
 
 /**
  * Downscale + re-encode the capture in the worker (OffscreenCanvas).
- * A 4K / HiDPI PNG can exceed 10 MB as base64 — slow to upload, expensive
+ * A 4K / HiDPI PNG can exceed 10 MB as base64: slow to upload, expensive
  * in vision tokens and rejected by some providers. Quiz text stays perfectly
  * legible at ~1600 px. Falls back to the original on any failure.
  */
@@ -146,7 +146,7 @@ async function prepareImage(dataUrl, settings) {
     const canvas = new OffscreenCanvas(w, h);
     const ctx = canvas.getContext("2d");
     if (wantJpeg) {
-      ctx.fillStyle = "#ffffff"; // JPEG has no alpha — avoid black backgrounds
+      ctx.fillStyle = "#ffffff"; // JPEG has no alpha, so avoid black backgrounds
       ctx.fillRect(0, 0, w, h);
     }
     ctx.drawImage(bitmap, 0, 0, w, h);
@@ -175,7 +175,7 @@ async function blobToDataUrl(blob) {
 
 /**
  * The manifest grants the hosted presets; anything else was requested at
- * runtime from the options page. Without the grant, CORS decides — many
+ * runtime from the options page. Without the grant, CORS decides: many
  * hosted APIs still work, local servers usually don't. We only use this to
  * give a precise remedy if the request then fails.
  */
@@ -234,7 +234,7 @@ async function extractPageHtml(tab, settings) {
 
 /**
  * Turn a bare connection failure on an ungranted endpoint into the precise
- * "click Grant access" remedy — it's the #1 cause of silent failures.
+ * "click Grant access" remedy; it's the #1 cause of silent failures.
  */
 async function withPermissionHint(settings, task) {
   try {
@@ -256,7 +256,7 @@ async function withPermissionHint(settings, task) {
 
 /**
  * @param {chrome.tabs.Tab} tab
- * @param {{ source?: "image"|"html" }} [opts] — one-off source override
+ * @param {{ source?: "image"|"html" }} [opts] - one-off source override
  *   (the popup passes the switcher value; shortcuts use the saved setting)
  */
 async function runCaptureAndAnalyze(tab, { source } = {}) {
@@ -319,7 +319,7 @@ async function runToggleSource(tab) {
   if (tab?.id) {
     await notifyTab(tab.id, {
       type: "QUIZKEY_TOAST",
-      text: `Quiz source: ${SOURCE_LABEL[next]} — press the capture shortcut to analyze.`,
+      text: `Quiz source: ${SOURCE_LABEL[next]}. Press the capture shortcut to analyze.`,
       tone: "info",
       position: settings.overlayPosition,
       theme: settings.theme,
@@ -398,7 +398,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
               await chrome.tabs.sendMessage(tabId, { type: "QUIZKEY_PING" });
               reachable = true;
             } catch (_) {
-              reachable = false; // fine — sendToTab injects on demand
+              reachable = false; // fine, sendToTab injects on demand
             }
           }
           const filePermission = await hasFileUrlsPermission();
@@ -425,7 +425,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         })().catch((err) => ({ error: normalizeError(err).toJSON() }))
       );
 
-    /* Options-page diagnostics — run through the worker so behaviour is
+    /* Options-page diagnostics: run through the worker so behaviour is
        identical to a real capture (same permissions, same code path). */
     case "QUIZKEY_TEST_CONNECTION":
       return respond(

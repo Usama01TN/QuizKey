@@ -1,6 +1,6 @@
 /**
  * lib/adapters/openai.js
- * The OpenAI Chat Completions dialect — spoken by OpenAI, OpenRouter,
+ * The OpenAI Chat Completions dialect, spoken by OpenAI, OpenRouter,
  * OmniRoute, LM Studio, Ollama (/v1), vLLM, Groq, Mistral, xAI, Azure
  * OpenAI and Gemini's compatibility layer.
  *
@@ -161,7 +161,7 @@ export async function complete({ base, settings, image, system, user, maxTokens,
   if (image?.dataUrl) userContent.push({ type: "image_url", image_url: { url: image.dataUrl, detail: "high" } });
   const messages = [
     { role: "system", content: system },
-    // Some text-only servers reject array content — send a bare string then.
+    // Some text-only servers reject array content, so send a bare string.
     { role: "user", content: image?.dataUrl ? userContent : user },
   ];
   const { payload, model } = await chatCompletions({ base, settings, messages, maxTokens, timeoutMs, label: "analyze" });
