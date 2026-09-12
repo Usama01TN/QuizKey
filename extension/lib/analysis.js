@@ -66,7 +66,7 @@ export function analysisFromReply(reply) {
       correctAnswerId: null,
       answerText: prose.slice(0, 500),
       confidence: 0.3,
-      explanation: "The model couldn't read a clear question — its best-effort answer is shown.",
+      explanation: "The model couldn't read a clear question; its best-effort answer is shown.",
       receivedAt: Date.now(),
     };
   }

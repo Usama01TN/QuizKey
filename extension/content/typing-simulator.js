@@ -1,6 +1,6 @@
 /**
  * content/typing-simulator.js
- * Replays an answer as a realistic stream of keyboard events — never a
+ * Replays an answer as a realistic stream of keyboard events, never a
  * paste. Every character dispatches the same sequence a physical keyboard
  * produces: keydown → keypress → beforeinput → (value mutation) → input →
  * keyup, with a human cadence (base delay + jitter, longer pauses between
@@ -40,7 +40,7 @@
       cancelable: true,
       composed: true,
     });
-    // keyCode/which are read-only — define them for legacy listeners.
+    // keyCode/which are read-only, so define them for legacy listeners.
     Object.defineProperty(event, "keyCode", { get: () => meta.keyCode });
     Object.defineProperty(event, "which", { get: () => meta.keyCode });
     target.dispatchEvent(event);
@@ -91,7 +91,7 @@
     }
   }
 
-  /** Human-ish pacing — longer between words, after commas & sentence ends. */
+  /** Human-ish pacing: longer between words, after commas & sentence ends. */
   function charDelay(char, { delayMs, jitterMs }) {
     let d = delayMs + rand(Math.max(0, jitterMs));
     if (char === " ") d *= 1.6;
@@ -122,7 +122,7 @@
       const down = dispatchKey(el, "keydown", char);
       if (down.defaultPrevented) {
         await sleep(charDelay(char, { delayMs, jitterMs }));
-        continue; // the page vetoed this key — move on like a real typist would notice
+        continue; // the page vetoed this key, so move on like a real typist would notice
       }
       dispatchKey(el, "keypress", char);
       const before = dispatchInputEvent(el, "beforeinput", char);

@@ -30,7 +30,7 @@ export function buildBody({ model, system, user, image, maxTokens, quirks }) {
   const thinking = thinkingConfig(model);
   if (thinking && !quirks.has("reasoning")) generationConfig.thinkingConfig = thinking;
 
-  // `image` is optional — omitted for the HTML quiz source.
+  // `image` is optional: omitted for the HTML quiz source.
   const parts = [{ text: user }];
   if (image?.base64) parts.push({ inlineData: { mimeType: image.mimeType, data: image.base64 } });
   return {

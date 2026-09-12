@@ -1,6 +1,6 @@
 /**
  * options/options.js
- * Settings page logic. ES module — reuses the shared lib modules, persists
+ * Settings page logic. ES module; reuses the shared lib modules, persists
  * to chrome.storage immediately on change, requests optional host
  * permission for custom API endpoints, and includes a live replay of the
  * typing cadence.
@@ -108,7 +108,7 @@ function renderSource(source) {
   }
   els.htmlOptions.style.opacity = captureSource === "html" ? "" : "0.55";
   els.modelHint.textContent =
-    captureSource === "html" ? "(any chat model — vision not required)" : "(must accept image input)";
+    captureSource === "html" ? "(any chat model, vision not required)" : "(must accept image input)";
 }
 
 async function chooseSource(source) {
@@ -117,7 +117,7 @@ async function chooseSource(source) {
   await persist({ captureSource: source });
 }
 
-/* Provider presets come from lib/providers.js — one verified list shared
+/* Provider presets come from lib/providers.js: one verified list shared
    with the worker, the popup and the README. */
 function populateProviderSelect() {
   els.providerPreset.innerHTML = "";
@@ -157,7 +157,7 @@ async function persist(patch) {
   saveTimer = setTimeout(markSaved, 350);
 }
 
-/* Debounced variant for slider drags — chrome.storage has a write quota
+/* Debounced variant for slider drags: chrome.storage has a write quota
    (MAX_WRITE_OPERATIONS_PER_MINUTE), so continuous input events batch up. */
 let writeTimer = null;
 function persistLater(patch, ms = 220) {
@@ -196,7 +196,7 @@ async function hydrate() {
   void refreshGrantState();
 }
 
-/** Local servers don't need a key — say so instead of demanding one. */
+/** Local servers don't need a key, so say so instead of demanding one. */
 function syncKeyHint() {
   const local = isLocalEndpoint(els.apiBaseUrl.value);
   const p = getProvider(els.providerPreset.value);
@@ -278,7 +278,7 @@ function currentSnapshot() {
  * The manifest grants OpenAI, Gemini and OpenRouter. Every other origin
  * (OmniRoute, LM Studio, Ollama, Azure, a proxy…) must be granted at
  * runtime. Without it the background fetch is at the mercy of CORS, which
- * local servers usually block — the #1 reason "nothing happens" on capture.
+ * local servers usually block: the #1 reason "nothing happens" on capture.
  *
  * chrome.permissions.request() needs a user gesture, so we call it from
  * the change events of the URL/preset controls and from the buttons.
@@ -318,7 +318,7 @@ async function refreshGrantState() {
   els.btnGrant.textContent = granted ? "Access granted" : "Grant access";
   els.grantState.textContent = granted
     ? ""
-    : `QuizKey needs permission to contact ${pattern.replace(/\/\*$/, "")} — click "Grant access".`;
+    : `QuizKey needs permission to contact ${pattern.replace(/\/\*$/, "")}. Click "Grant access".`;
   els.grantState.className = granted ? "test-result ok" : "test-result err";
 }
 
@@ -357,7 +357,7 @@ async function prepareForCall() {
   await persist(currentSnapshot());
   const granted = await ensureEndpointPermission();
   if (!granted) {
-    setResult("Host permission was not granted — the request may be blocked by CORS. Trying anyway…", "err");
+    setResult("Host permission was not granted; the request may be blocked by CORS. Trying anyway…", "err");
   }
 }
 
@@ -396,7 +396,7 @@ els.btnModels.addEventListener("click", async () => {
     }
     const current = els.model.value.trim();
     els.modelsState.textContent = models.length
-      ? `${models.length} model${models.length === 1 ? "" : "s"} available — start typing in the Model box to pick one.` +
+      ? `${models.length} model${models.length === 1 ? "" : "s"} available. Start typing in the Model box to pick one.` +
         (current && !models.includes(current) ? ` Note: "${current}" is not among them.` : "")
       : "The provider returned an empty model list.";
     if (!current && models.length) {
@@ -421,7 +421,7 @@ function sampleQuizImage() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = "#111827";
   ctx.font = "bold 30px Arial";
-  ctx.fillText("Geography Quiz — Question 3 of 10", 40, 70);
+  ctx.fillText("Geography Quiz: Question 3 of 10", 40, 70);
   ctx.font = "26px Arial";
   ctx.fillText("What is the capital city of France?", 40, 140);
   ctx.font = "24px Arial";
@@ -445,7 +445,7 @@ function sampleQuizImage() {
 /** The same sample quiz as a cleaned HTML extract (what page-extractor.js emits). */
 function sampleQuizHtml() {
   return [
-    "<h2>Geography Quiz — Question 3 of 10</h2>",
+    "<h2>Geography Quiz: Question 3 of 10</h2>",
     "<p>What is the capital city of France?</p>",
     "<ul>",
     '<li><label><input type="radio" name="q3" value="a"> A. Rome</label></li>',
@@ -477,7 +477,7 @@ els.btnDiagnose.addEventListener("click", async () => {
         : a.answerText;
       const verdict = /paris/i.test(best || "") ? "✓ Pipeline works." : "⚠ Pipeline works but the model answered unexpectedly:";
       setResult(
-        `${verdict}\nModel: ${a.model} (${a.apiStyle} API · ${a.source || (viaHtml ? "html" : "image")} source)\nQuestion read: ${a.question || "—"}\nAnswer: ${best || "—"} (${Math.round((a.confidence || 0) * 100)}% confident)` +
+        `${verdict}\nModel: ${a.model} (${a.apiStyle} API · ${a.source || (viaHtml ? "html" : "image")} source)\nQuestion read: ${a.question || "(none)"}\nAnswer: ${best || "(none)"} (${Math.round((a.confidence || 0) * 100)}% confident)` +
           (a.explanation ? `\n${a.explanation}` : ""),
         "ok"
       );
@@ -549,8 +549,8 @@ els.btnPreview.addEventListener("click", runPreview);
 async function refreshFileAccess() {
   const granted = await hasFileUrlsPermission();
   els.fileAccessState.textContent = granted
-    ? "Enabled — typing and overlay work on open local files."
-    : "Not enabled — capture works on local files, typing & overlay need this.";
+    ? "Enabled. Typing and overlay work on open local files."
+    : "Not enabled. Capture works on local files; typing and overlay need this.";
   els.fileAccessState.className = granted ? "test-result ok" : "test-result";
   els.btnFileAccess.disabled = granted;
   els.btnFileAccess.textContent = granted ? "File access enabled" : "Enable file access";

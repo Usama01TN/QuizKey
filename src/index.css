@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   Theme tokens — dark is the default, `html.light` flips every surface/text
+   Theme tokens: dark is the default, `html.light` flips every surface/text
    color. Tailwind utilities (bg-panel, text-fg/70, border-line …) read these
    through @theme inline, so components never hard-code a hex again.
    ========================================================================== */
@@ -82,7 +82,7 @@ html, body {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* Tailwind v4 dropped the default pointer on buttons — restore it for every
+/* Tailwind v4 dropped the default pointer on buttons, so restore it for every
    clickable control (theme switch, tabs, demo keys …). */
 button:not(:disabled),
 [role="button"]:not([aria-disabled="true"]),

@@ -37,7 +37,7 @@ const INSTALL_STEPS = [
   {
     icon: KeyboardIcon,
     title: "Bind your shortcuts",
-    body: "Set the capture and type combos — or keep the defaults Alt+Q and Alt+A.",
+    body: "Set the capture and type combos, or keep the defaults Alt+Q and Alt+A.",
     code: "chrome://extensions/shortcuts",
   },
 ];
@@ -46,19 +46,19 @@ const SETTINGS: [string, string, string][] = [
   ["provider", "string", "openai"],
   ["apiStyle", "auto | openai | gemini | anthropic", "auto"],
   ["apiBaseUrl", "string", "https://api.openai.com/v1"],
-  ["apiKey", "string", "— (storage.local only)"],
+  ["apiKey", "string", "(storage.local only)"],
   ["model", "string", "gpt-4o-mini"],
   ["requestTimeoutMs", "number", "90000"],
   ["maxOutputTokens", "number", "4096"],
   ["maxImageEdge", "number", "1600"],
   ["captureFormat", "png | jpeg", "jpeg"],
-  ["jpegQuality", "0.1 – 1.0", "0.85"],
+  ["jpegQuality", "0.1 to 1.0", "0.85"],
   ["typingDelayMs", "number", "60"],
   ["typingJitterMs", "number", "45"],
   ["autoType", "boolean", "false"],
   ["clickChoice", "boolean", "true"],
   ["highlightMatches", "boolean", "true"],
-  ["extraInstructions", "string", "—"],
+  ["extraInstructions", "string", ""],
   ["overlayPosition", "enum", "top-right"],
 ];
 
@@ -219,7 +219,7 @@ export default function Docs() {
           {[
             [
               "Restricted: system pages",
-              "chrome:// settings, history, new tab, the PDF viewer and other extensions' pages can't be captured or scripted by ANY extension — a Chromium security rule, not a bug. The popup names the exact page kind.",
+              "chrome:// settings, history, new tab, the PDF viewer and other extensions' pages can't be captured or scripted by ANY extension. That's a Chromium security rule, not a bug. The popup names the exact page kind.",
             ],
             [
               "Restricted: Web Store",
@@ -227,11 +227,11 @@ export default function Docs() {
             ],
             [
               "Local files (file://)",
-              "Capture works out of the box. Typing needs a grant: QuizKey Settings → “Enable file access” (one click). Chrome's own “Allow access to file URLs” toggle may be hidden — it only renders when a declared URL permission exists, and QuizKey asks at runtime instead.",
+              "Capture works out of the box. Typing needs a grant: QuizKey Settings → “Enable file access” (one click). Chrome's own “Allow access to file URLs” toggle may be hidden; it only renders when a declared URL permission exists, and QuizKey asks at runtime instead.",
             ],
             [
               "Tab open before install?",
-              "Its content script is missing — QuizKey now auto-injects on capture via chrome.scripting. If you still see a messaging error, reload that tab once.",
+              "Its content script is missing, so QuizKey now auto-injects on capture via chrome.scripting. If you still see a messaging error, reload that tab once.",
             ],
           ].map(([title, body]) => (
             <div key={title}>

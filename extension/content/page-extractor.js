@@ -2,15 +2,15 @@
  * content/page-extractor.js
  * "HTML" quiz source: instead of a screenshot, serialize the quiz that is
  * on screen into a compact, cleaned-up HTML snippet the model can read as
- * text. Only semantic tags and a handful of attributes survive — no
- * scripts, styles, wrappers, ids, classes or tracking noise — so a whole
+ * text. Only semantic tags and a handful of attributes survive: no
+ * scripts, styles, wrappers, ids, classes or tracking noise, so a whole
  * quiz screen usually fits in a few thousand characters.
  *
  * Scope rules (in priority order):
- *   1. The user's text selection (≥ 15 chars) — "analyze exactly this".
- *   2. `scope: "viewport"` — every element that intersects the visible
+ *   1. The user's text selection (≥ 15 chars): "analyze exactly this".
+ *   2. `scope: "viewport"`, every element that intersects the visible
  *      viewport, i.e. what the screenshot would have shown.
- *   3. `scope: "page"` — the whole document body.
+ *   3. `scope: "page"`, the whole document body.
  *
  * Content scripts can't use ES module imports, so this module registers
  * itself on `window.QuizKey.PageExtractor`.
@@ -78,7 +78,7 @@
   /**
    * Is this element rendered? Custom radio/checkbox widgets usually hide the
    * real input (display:none, opacity:0, off-screen) but the control is still
-   * the thing that matters, so choice inputs bypass the visual check — they
+   * the thing that matters, so choice inputs bypass the visual check and
    * are included whenever their parent is.
    */
   function isRendered(el, style) {
@@ -228,7 +228,7 @@
     const wasPre = ctx.inPre;
     if (tag === "PRE") ctx.inPre = true;
 
-    // Shadow DOM (web-component quiz widgets) — read the rendered tree.
+    // Shadow DOM (web-component quiz widgets): read the rendered tree.
     const children = el.shadowRoot ? Array.from(el.shadowRoot.childNodes) : Array.from(el.childNodes);
     for (const child of children) {
       if (ctx.budget.left <= 0) break;
@@ -253,7 +253,7 @@
   /**
    * Tidy: one element per line, no blank lines, no empty wrappers, no
    * stray spaces before closing tags. Structure carries the meaning here,
-   * not vertical rhythm — and every saved character is a saved token.
+   * not vertical rhythm, and every saved character is a saved token.
    */
   function tidy(html) {
     return html
@@ -307,7 +307,7 @@
     let html = tidy(ctx.parts.join(""));
 
     // A viewport pass on a page whose quiz is fully scrolled away yields
-    // nothing useful — fall back to the whole page rather than fail.
+    // nothing useful, so fall back to the whole page rather than fail.
     if (scope === "viewport" && html.replace(/<[^>]+>/g, "").trim().length < 20) {
       const full = { ...ctx, filterViewport: false, parts: [], budget: { left: maxChars, truncated: false } };
       walk(root, full);

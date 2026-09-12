@@ -25,8 +25,8 @@ const SEQUENCE: { delay: number; line: LogLine }[] = [
   { delay: 650, line: { text: "  → frame captured · 1920×1080 · 218 KB", tone: "info" } },
   { delay: 750, line: { text: "$ POST /v1/chat/completions · gpt-4o-mini", tone: "cmd" } },
   { delay: 1250, line: { text: "  ← 200 OK · question + 4 options parsed", tone: "info" } },
-  { delay: 850, line: { text: '  ✓ best answer "C — Saturn" · 97% confident', tone: "ok" } },
-  { delay: 900, line: { text: '  ⌨ ready — press Alt+A to type "Saturn"', tone: "lime" } },
+  { delay: 850, line: { text: '  ✓ best answer "C. Saturn" · 97% confident', tone: "ok" } },
+  { delay: 900, line: { text: '  ⌨ ready: press Alt+A to type "Saturn"', tone: "lime" } },
 ];
 
 export default function Hero() {
@@ -161,7 +161,7 @@ export default function Hero() {
               captures the page, a vision model reads the question, and a second
               keystroke replays the answer as{" "}
               <span className="text-fg">genuine, per-character keyboard events</span>{" "}
-              — with a human cadence. Never pasted. Fully configurable. Graceful when it fails.
+              with a human cadence. Never pasted. Fully configurable. Graceful when it fails.
             </motion.p>
 
             <motion.div
@@ -221,7 +221,7 @@ export default function Hero() {
 
               <div className="mb-8 flex items-center justify-between">
                 <span className="font-mono text-[10.5px] uppercase tracking-[0.22em] text-mist">
-                  Live binding — try it
+                  Live binding, try it
                 </span>
                 <span className="flex items-center gap-1.5 font-mono text-[10.5px] text-mist">
                   <span
@@ -278,7 +278,7 @@ export default function Hero() {
               <div className="mt-9 min-h-[152px] rounded-2xl border border-fg/[0.07] bg-panel p-4 font-mono text-[11.5px] leading-[1.9]">
                 {log.length === 0 ? (
                   <p className="text-mist2">
-                    <span className="text-acid">$</span> quizkey — waiting for input…
+                    <span className="text-acid">$</span> quizkey: waiting for input…
                     <span className="caret-blink ml-1 inline-block h-3.5 w-[7px] translate-y-0.5 bg-acid/80" />
                   </p>
                 ) : (
@@ -301,7 +301,7 @@ export default function Hero() {
                 <kbd className="rounded border border-fg/15 bg-fg/5 px-1.5 py-0.5 text-acid">Alt</kbd>{" "}
                 +{" "}
                 <kbd className="rounded border border-fg/15 bg-fg/5 px-1.5 py-0.5 text-acid">Q</kbd>{" "}
-                on your real keyboard — or click the caps
+                on your real keyboard, or click the caps
               </p>
             </div>
           </motion.div>

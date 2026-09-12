@@ -52,7 +52,7 @@ export function useTheme() {
     try {
       localStorage.setItem(THEME_KEY, next);
     } catch {
-      /* private mode — session only */
+      /* private mode, session only */
     }
   }, []);
 

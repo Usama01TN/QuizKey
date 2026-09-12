@@ -111,7 +111,7 @@ export default function Demo() {
     const { delay: d, jitter: j, hideInput: hide } = settingsRef.current;
     setPhase("acting");
 
-    // 1 — fly the cursor to option C and "click" it with pointer events
+    // 1. Fly the cursor to option C and "click" it with pointer events
     const stage = stageRef.current?.getBoundingClientRect();
     const opt = optionCRef.current?.getBoundingClientRect();
     if (stage && opt) {
@@ -130,7 +130,7 @@ export default function Demo() {
       });
     });
 
-    // 2 — type the answer char by char (or fail gracefully when hidden)
+    // 2. Type the answer char by char (or fail gracefully when hidden)
     after(1350, () => {
       if (hide) {
         after(500, () => {
@@ -208,7 +208,7 @@ export default function Demo() {
           </h2>
           <p className="mt-4 text-[15px] leading-relaxed text-mist">
             A faithful in-page replay of the extension's flow on a mock quiz. Tune the
-            cadence, toggle auto-type, or hide the input field to see how errors surface —
+            cadence, toggle auto-type, or hide the input field to see how errors surface,
             then fire it with <kbd className="rounded border border-fg/15 bg-fg/5 px-1.5 font-mono text-[11px] text-acid">Alt</kbd>+<kbd className="rounded border border-fg/15 bg-fg/5 px-1.5 font-mono text-[11px] text-acid">Q</kbd>.
           </p>
         </div>
@@ -543,7 +543,7 @@ export default function Demo() {
                       <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-mist">
                         Best answer
                       </p>
-                      <p className="text-[13.5px] font-bold text-acid-soft">C — Saturn</p>
+                      <p className="text-[13.5px] font-bold text-acid-soft">C. Saturn</p>
                     </div>
                     <div className="mt-3 flex items-center gap-2.5">
                       <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-fg/10">
@@ -573,7 +573,7 @@ export default function Demo() {
                     )}
                     {phase === "done" && (
                       <p className="mt-3 flex items-center gap-1.5 text-[11px] font-semibold text-emerald-400">
-                        <CheckCircle2 size={13} /> Typed with real key events — {delay}ms ± {jitter}ms
+                        <CheckCircle2 size={13} /> Typed with real key events, {delay}ms ± {jitter}ms
                       </p>
                     )}
                   </motion.div>
@@ -594,11 +594,11 @@ export default function Demo() {
                       <X size={14} strokeWidth={3} />
                     </span>
                     <div>
-                      <p className="text-[12.5px] font-bold text-fg">NO_INPUT — handled gracefully</p>
+                      <p className="text-[12.5px] font-bold text-fg">NO_INPUT, handled gracefully</p>
                       <p className="mt-1 text-[11.5px] leading-relaxed text-mist">
                         No visible, editable field on this page. Focus the field and press{" "}
                         <kbd className="rounded border border-fg/15 bg-fg/5 px-1 font-mono text-[9.5px] text-acid">⌥A</kbd>{" "}
-                        again — the answer stays pinned in the overlay.
+                        again, and the answer stays pinned in the overlay.
                       </p>
                     </div>
                   </motion.div>
@@ -611,14 +611,14 @@ export default function Demo() {
         {/* under-controls */}
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-fg/[0.07] bg-panel px-5 py-4">
           <p className="font-mono text-[11px] text-mist">
-            {phase === "idle" && "status: idle — press run or Alt+Q"}
+            {phase === "idle" && "status: idle, press run or Alt+Q"}
             {phase === "capturing" && "status: capturing frame…"}
             {phase === "analyzing" && "status: waiting for model…"}
-            {phase === "parsed" && "status: question parsed — locating answers…"}
-            {phase === "decided" && "status: answer ready — Alt+A or auto-type"}
+            {phase === "parsed" && "status: question parsed, locating answers…"}
+            {phase === "decided" && "status: answer ready, Alt+A or auto-type"}
             {phase === "acting" && "status: simulating input events…"}
-            {phase === "done" && "status: done — answer landed via keydown/keypress/input/keyup"}
-            {phase === "error" && "status: QuizKeyError(NO_INPUT) — toast shown, nothing crashed"}
+            {phase === "done" && "status: done, answer landed via keydown/keypress/input/keyup"}
+            {phase === "error" && "status: QuizKeyError(NO_INPUT), toast shown, nothing crashed"}
           </p>
           <button
             onClick={reset}
@@ -633,7 +633,7 @@ export default function Demo() {
   );
 }
 
-// typing caret visibility helper — keeps the caret while the field is targeted
+// typing caret visibility helper: keeps the caret while the field is targeted
 function clickedOptionErrorGuard(phase: string, typed: string) {
   return phase === "done" && typed.length > 0;
 }

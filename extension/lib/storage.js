@@ -1,7 +1,7 @@
 /**
  * lib/storage.js
  * Single source of truth for settings + per-tab analysis results.
- * Everything lives in chrome.storage.local — nothing is synced or sent
+ * Everything lives in chrome.storage.local; nothing is synced or sent
  * anywhere except to the configured AI endpoint.
  */
 
@@ -9,16 +9,16 @@
  * @property {string}  provider          Preset id from lib/providers.js ("openai", "gemini", …, "custom")
  * @property {"auto"|"openai"|"gemini"|"anthropic"} apiStyle  API dialect; "auto" infers it from the URL
  * @property {string}  apiBaseUrl        Provider base URL (no trailing slash)
- * @property {string}  apiKey            API key — stored locally only
+ * @property {string}  apiKey            API key, stored locally only
  * @property {string}  model             Vision-capable model name
  * @property {number}  requestTimeoutMs  Abort threshold for AI requests (reasoning models are slow)
- * @property {number}  maxOutputTokens   Completion budget — must be large for reasoning models
+ * @property {number}  maxOutputTokens   Completion budget; must be large for reasoning models
  * @property {number}  maxImageEdge      Screenshot is downscaled so its longest edge ≤ this (0 = off)
  * @property {"image"|"html"} captureSource  Quiz source: screenshot (vision model) or cleaned page HTML (any model)
  * @property {"viewport"|"page"} htmlScope  HTML source: what is on screen, or the whole document
  * @property {number}  htmlMaxChars      HTML source: size cap for the extract sent to the model
  * @property {"png"|"jpeg"} captureFormat  Image source only
- * @property {number}  jpegQuality       0.1 – 1.0 (ignored for png)
+ * @property {number}  jpegQuality       0.1 to 1.0 (ignored for png)
  * @property {number}  typingDelayMs     Base delay between keystrokes
  * @property {number}  typingJitterMs    Random 0..n ms added per keystroke
  * @property {boolean} autoType          Type automatically after analysis

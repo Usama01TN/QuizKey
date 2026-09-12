@@ -94,7 +94,7 @@ export default function Architecture() {
           </h2>
           <p className="mt-4 text-[15px] leading-relaxed text-mist">
             Screenshot capture, AI analysis, DOM detection, keyboard simulation, settings
-            and error handling each live in their own module with one job — glued together
+            and error handling each live in their own module with one job, glued together
             by typed messages, never by shared state.
           </p>
         </div>

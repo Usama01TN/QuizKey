@@ -1,7 +1,7 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "../lib/theme";
 
-/** Sun/Moon switch — the icon shows the theme you will switch *to*. */
+/** Sun/Moon switch: the icon shows the theme you will switch *to*. */
 export default function ThemeToggle({ className = "" }: { className?: string }) {
   const { isLight, toggle } = useTheme();
   const label = isLight ? "Switch to dark mode" : "Switch to light mode";

@@ -74,13 +74,13 @@ export default function Features() {
         </div>
 
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {/* 1 — real key events (wide) */}
+          {/* 1. Real key events (wide) */}
           <Card className="md:col-span-2" delay={0}>
             <IconBadge icon={Keyboard} />
-            <h3 className="text-xl font-bold">Real keyboard events — never a paste</h3>
+            <h3 className="text-xl font-bold">Real keyboard events, never a paste</h3>
             <p className="mt-2 max-w-md text-[13.5px] leading-relaxed text-mist">
               Every character walks the full native path, mutating the value through the
-              platform setter so React, Vue and Angular controlled inputs all catch it —
+              platform setter so React, Vue and Angular controlled inputs all catch it,
               including <code className="font-mono text-[11px] text-acid-soft">preventDefault()</code> handling.
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-1.5">
@@ -100,7 +100,7 @@ export default function Features() {
             </div>
           </Card>
 
-          {/* 2 — vision */}
+          {/* 2. Vision */}
           <Card delay={0.08}>
             <IconBadge icon={ScanLine} />
             <h3 className="text-xl font-bold">Screenshot → structured answer</h3>
@@ -115,12 +115,12 @@ export default function Features() {
             </div>
           </Card>
 
-          {/* 3 — cadence */}
+          {/* 3. Cadence */}
           <Card delay={0.13}>
             <IconBadge icon={Timer} />
             <h3 className="text-xl font-bold">Human typing cadence</h3>
             <p className="mt-2 text-[13.5px] leading-relaxed text-mist">
-              Configurable base delay plus random jitter — with longer breaths at word
+              Configurable base delay plus random jitter, with longer breaths at word
               boundaries and after punctuation.
             </p>
             <div className="mt-6 flex h-16 items-end gap-1.5">
@@ -140,7 +140,7 @@ export default function Features() {
             </p>
           </Card>
 
-          {/* 4 — configurable */}
+          {/* 4. Configurable */}
           <Card delay={0.18}>
             <IconBadge icon={Settings2} />
             <h3 className="text-xl font-bold">Configurable everything</h3>
@@ -160,13 +160,13 @@ export default function Features() {
             </div>
           </Card>
 
-          {/* 5 — errors */}
+          {/* 5. Errors */}
           <Card delay={0.23}>
             <IconBadge icon={AlertTriangle} />
             <h3 className="text-xl font-bold">Typed errors, graceful exits</h3>
             <p className="mt-2 text-[13.5px] leading-relaxed text-mist">
               Every failure is a <code className="font-mono text-[11px] text-acid-soft">QuizKeyError</code> with
-              a stable code and a user message — shown as a toast and mirrored on the badge.
+              a stable code and a user message, shown as a toast and mirrored on the badge.
             </p>
             <div className="mt-6 space-y-1">
               {ERROR_CODES.map(([code, act]) => (
@@ -181,7 +181,7 @@ export default function Features() {
             </div>
           </Card>
 
-          {/* 6 — security */}
+          {/* 6. Security */}
           <Card delay={0.28}>
             <IconBadge icon={Lock} />
             <h3 className="text-xl font-bold">Manifest V3, minimal trust</h3>

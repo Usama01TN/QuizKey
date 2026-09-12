@@ -54,7 +54,7 @@ function prepared(settings) {
   }
   if (/YOUR-RESOURCE|YOUR-DEPLOYMENT/i.test(base)) {
     throw new QuizKeyError(ErrorCodes.API_CONNECTION_FAILED, "Placeholder base URL", undefined,
-      "The Azure base URL still contains YOUR-RESOURCE / YOUR-DEPLOYMENT placeholders — fill them in.");
+      "The Azure base URL still contains YOUR-RESOURCE / YOUR-DEPLOYMENT placeholders. Fill them in.");
   }
   if (!hasUsableCredentials(settings)) throw new QuizKeyError(ErrorCodes.API_KEY_MISSING);
   return base;
@@ -99,7 +99,7 @@ export async function analyzeScreenshot({ dataUrl, settings }) {
 
 /**
  * Analyze a cleaned HTML extract of the page (quiz source: "html").
- * Works with any chat model — vision capability is not required.
+ * Works with any chat model; vision capability is not required.
  * @param {{ html: string, meta?: object, settings: import('./storage.js').QuizKeySettings }} args
  */
 export async function analyzePageHtml({ html, meta = {}, settings }) {
@@ -138,7 +138,7 @@ export async function testConnection(settings) {
   try {
     ids = await adapter.listModels({ base, settings, timeoutMs });
   } catch (err) {
-    // Auth errors are definitive — surface them. Anything else (404 on a
+    // Auth errors are definitive, so surface them. Anything else (404 on a
     // gateway without /models, 405…) falls through to the completion probe.
     if (err?.code === ErrorCodes.API_KEY_MISSING || err?.code === ErrorCodes.API_CONNECTION_FAILED || err?.code === ErrorCodes.API_TIMEOUT) throw err;
   }
@@ -146,16 +146,16 @@ export async function testConnection(settings) {
   if (Array.isArray(ids) && ids.length) {
     const model = settings.model;
     let hint = "";
-    if (!model) hint = ` No model set — the first served model (${ids[0]}) will be used.`;
+    if (!model) hint = ` No model set: the first served model (${ids[0]}) will be used.`;
     else if (!ids.includes(model) && !ids.includes(`models/${model}`)) {
       const tail = String(model).toLowerCase().split(/[:/]/).pop();
       const near = ids.filter((id) => id.toLowerCase().includes(tail)).slice(0, 3);
-      hint = ` Warning: "${model}" is not in the provider's list${near.length ? ` (similar: ${near.join(", ")})` : ""} — click "Load models".`;
+      hint = ` Warning: "${model}" is not in the provider's list${near.length ? ` (similar: ${near.join(", ")})` : ""}. Click "Load models".`;
     }
-    return `Connection OK — ${where} answered with ${ids.length} model${ids.length === 1 ? "" : "s"}.${hint}`;
+    return `Connection OK: ${where} answered with ${ids.length} model${ids.length === 1 ? "" : "s"}.${hint}`;
   }
 
   const res = await adapter.probe({ base, settings, timeoutMs });
-  return `Connection OK — ${where} answered a test completion with "${res.model}".` +
+  return `Connection OK: ${where} answered a test completion with "${res.model}".` +
     (res.base && res.base !== base ? ` Tip: set the base URL to "${res.base}".` : "");
 }

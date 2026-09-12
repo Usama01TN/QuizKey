@@ -96,7 +96,7 @@ export default function SourceExplorer() {
               Read every line <span className="text-acid">right here.</span>
             </h2>
             <p className="mt-4 text-[15px] leading-relaxed text-mist">
-              The explorer below renders the actual files that ship inside the extension —
+              The explorer below renders the actual files that ship inside the extension:
               no excerpts, no placeholders. Use{" "}
               <kbd className="rounded border border-fg/15 bg-fg/5 px-1.5 font-mono text-[11px] text-acid">↑</kbd>{" "}
               <kbd className="rounded border border-fg/15 bg-fg/5 px-1.5 font-mono text-[11px] text-acid">↓</kbd>{" "}

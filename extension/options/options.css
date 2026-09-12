@@ -102,7 +102,7 @@ code {
 .field > span { font-size: 12px; font-weight: 650; color: var(--text-strong); }
 .field em { font-style: normal; color: var(--muted); font-weight: 500; }
 
-input[type="text"], input[type="url"], input[type="password"], select, textarea {
+input[type="text"], input[type="url"], input[type="password"], input[type="number"], select, textarea {
   width: 100%;
   background: var(--panel-2);
   border: 1px solid var(--border);
@@ -121,6 +121,25 @@ input:focus, select:focus, textarea:focus {
 }
 .key-row { display: flex; gap: 8px; }
 .key-row input { flex: 1; }
+
+/* Number fields (spinboxes).
+   Chromium renders the spin buttons with the element's own color-scheme and
+   only reveals them on hover, which on a dark card looks like a missing
+   control. Declaring color-scheme explicitly keeps the arrows themed with
+   the rest of the page, and opacity:1 keeps them visible at rest. Firefox
+   draws its own spinner and ignores the pseudo-elements, which is fine. */
+input[type="number"] {
+  color-scheme: dark;
+  padding-right: 8px;
+  font-variant-numeric: tabular-nums;
+}
+:root[data-theme="light"] input[type="number"] { color-scheme: light; }
+input[type="number"]::-webkit-inner-spin-button {
+  opacity: 1;
+  height: 24px;
+  margin-left: 6px;
+  cursor: pointer;
+}
 
 input[type="range"] { width: 100%; accent-color: var(--lime); }
 output { float: right; font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; color: var(--lime); }

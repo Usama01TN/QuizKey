@@ -1,5 +1,5 @@
 /**
- * lib/theme.js — dark / light / auto theme for the extension's own pages.
+ * lib/theme.js: dark / light / auto theme for the extension's own pages.
  *
  * The chosen mode lives in settings.theme ("auto" | "dark" | "light") so the
  * options page, the popup and the in-page overlay all agree. localStorage
@@ -61,7 +61,7 @@ export async function initTheme({ toggle = null, onChange } = {}) {
   try {
     mode = (await getSettings()).theme || "auto";
   } catch (_) {
-    /* storage unavailable — keep boot value */
+    /* storage unavailable, keep boot value */
   }
   paint();
 

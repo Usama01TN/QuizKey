@@ -54,7 +54,7 @@ export function isLocalEndpoint(url) {
   }
 }
 
-/** "https://host/*" — the shape chrome.permissions wants. */
+/** "https://host/*": the shape chrome.permissions wants. */
 export function originPattern(url) {
   try {
     return `${new URL(normalizeBaseUrl(url)).origin}/*`;
@@ -96,7 +96,7 @@ export function splitDataUrl(dataUrl) {
 
 /**
  * MV3 service workers are killed after ~30 s idle. A long fetch alone does
- * not always reset that timer, but any extension API call does — so we
+ * not always reset that timer, but any extension API call does, so we
  * ping a cheap one every 20 s while a request is in flight.
  */
 function startKeepAlive() {
@@ -114,7 +114,7 @@ function startKeepAlive() {
 /**
  * fetch() that converts network failures + timeouts into QuizKeyErrors and
  * records the call in the diagnostics log. Resolves with the Response for
- * any HTTP status — callers decide what a non-2xx means.
+ * any HTTP status; callers decide what a non-2xx means.
  */
 export async function request(url, init = {}, { timeoutMs = DEFAULT_TIMEOUT_MS, label = "" } = {}) {
   const controller = new AbortController();
@@ -193,7 +193,7 @@ export function extractProviderError(bodyText) {
       if (typeof c === "string" && c.trim()) return c.trim().slice(0, 300);
     }
   } catch (_) {
-    /* not JSON — probably an HTML error page */
+    /* not JSON, probably an HTML error page */
   }
   return raw.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 300);
 }
@@ -201,7 +201,7 @@ export function extractProviderError(bodyText) {
 /** Map an HTTP status + provider text to a precise, actionable QuizKeyError. */
 export function httpError(status, bodyText, { model = "", base = "" } = {}) {
   const detail = extractProviderError(bodyText).replace(/[.\s]+$/, "");
-  const suffix = detail ? ` — ${detail}` : "";
+  const suffix = detail ? `: ${detail}` : "";
   let code = ErrorCodes.API_REQUEST_FAILED;
   let msg;
 
@@ -209,7 +209,7 @@ export function httpError(status, bodyText, { model = "", base = "" } = {}) {
     code = ErrorCodes.API_KEY_MISSING;
     msg = `The provider rejected the API key (HTTP ${status})${suffix}. Check the key on the QuizKey settings page.`;
   } else if (status === 404) {
-    msg = `Not found (HTTP 404)${suffix}. Check the base URL (${base}) and that the model "${model}" exists on this provider — use "Load models" in settings.`;
+    msg = `Not found (HTTP 404)${suffix}. Check the base URL (${base}) and that the model "${model}" exists on this provider; use "Load models" in settings.`;
   } else if (status === 429) {
     msg = `Rate limit or quota exceeded (HTTP 429)${suffix}. Wait a moment or check your provider billing.`;
   } else if (status === 402) {

@@ -18,7 +18,7 @@ const OUTPUT_SCHEMA = `JSON schema:
   "inputKind": "choice" | "text" | "none",
   "correctAnswerId": string | null, // id from answers[] when inputKind = "choice"
   "answerText": string | null,      // exact text to type/click, no explanation
-  "confidence": number,             // 0.0 – 1.0
+  "confidence": number,             // 0.0 to 1.0
   "explanation": string             // one short sentence, for the user only
 }`;
 
@@ -29,7 +29,7 @@ You receive a screenshot of a webpage containing a quiz, test or form.
 Your job:
 1. Read the visible question and every visible answer option / input hint.
 2. Decide which answer is most likely correct (or produce the best fill-in answer).
-3. Respond ONLY with a single JSON object — no markdown fences, no prose.
+3. Respond ONLY with a single JSON object. No markdown fences, no prose.
 
 ${OUTPUT_SCHEMA}
 
@@ -55,7 +55,7 @@ Your job:
    - Ignore navigation, headers, footers, ads, timers, progress bars and
      previously answered questions unless they are the only question present.
 2. Decide which answer is most likely correct (or produce the best fill-in answer).
-3. Respond ONLY with a single JSON object — no markdown fences, no prose.
+3. Respond ONLY with a single JSON object. No markdown fences, no prose.
 
 ${OUTPUT_SCHEMA}
 
@@ -86,7 +86,7 @@ export function buildUserText(extraInstructions = "") {
 /**
  * The user-turn text for HTML analysis: a short context header, then the
  * extract fenced so the model can tell content from instructions.
- * @param {string} html — output of content/page-extractor.js
+ * @param {string} html - output of content/page-extractor.js
  * @param {{ title?: string, url?: string, scope?: string, truncated?: boolean }} [meta]
  * @param {string} [extraInstructions]
  */
@@ -94,7 +94,7 @@ export function buildHtmlUserText(html, meta = {}, extraInstructions = "") {
   const extra = String(extraInstructions || "").trim();
   const scopeNote =
     meta.scope === "selection"
-      ? "The user selected this part of the page — it is the quiz to answer."
+      ? "The user selected this part of the page; it is the quiz to answer."
       : meta.scope === "page"
         ? "This is the whole page; locate the current question."
         : "This is what is currently visible in the browser viewport.";
@@ -115,7 +115,7 @@ export function buildHtmlUserText(html, meta = {}, extraInstructions = "") {
 
 /**
  * OpenAI-style messages array (also used by every OpenAI-compatible server).
- * @param {string} dataUrl — data:image/...;base64 screenshot
+ * @param {string} dataUrl - data:image/...;base64 screenshot
  * @param {string} [extraInstructions]
  */
 export function buildAnalysisMessages(dataUrl, extraInstructions = "") {

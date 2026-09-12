@@ -1,5 +1,5 @@
 /**
- * lib/theme-boot.js — classic (non-module) script loaded first in <head> of
+ * lib/theme-boot.js: classic (non-module) script loaded first in <head> of
  * the options and popup pages. MV3 forbids inline scripts, so this file does
  * the "apply theme before first paint" job: it reads the last known choice
  * from localStorage (a synchronous mirror of the chrome.storage setting) or

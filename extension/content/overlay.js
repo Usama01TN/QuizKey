@@ -19,7 +19,7 @@
   /*                                                                    */
   /* 1. The root is a `popover="manual"` element. Open popovers live in */
   /*    the browser's *top layer*, which renders above every z-index on */
-  /*    the page — including <dialog> modals and the page's own         */
+  /*    the page, including <dialog> modals and the page's own          */
   /*    popovers. Re-opening it moves it to the front of that layer.    */
   /* 2. A MutationObserver re-attaches the root if a page script        */
   /*    removes it and keeps it the last child of <html>, so the        */
@@ -45,7 +45,7 @@
     try {
       const html = document.documentElement;
       if (root.parentNode !== html || html.lastElementChild !== root) {
-        html.appendChild(root); // (re)attach — also moves it after any newer siblings
+        html.appendChild(root); // (re)attach; also moves it after any newer siblings
       }
       if (supportsPopover) {
         if (root.getAttribute("popover") !== "manual") root.setAttribute("popover", "manual");
@@ -53,7 +53,7 @@
           if (isOpen(root)) root.hidePopover(); // re-show = move to the top of the top layer
           root.showPopover();
         } catch (_) {
-          /* not connected yet or already open — ignore */
+          /* not connected yet or already open, ignore */
         }
       }
     } finally {
@@ -81,7 +81,7 @@
     guard.observe(document.documentElement, { childList: true });
     guard.observe(root, { attributes: true, attributeFilter: ["id", "popover", "style", "class"] });
 
-    // Fullscreen elements enter the top layer above us — climb back on top.
+    // Fullscreen elements enter the top layer above us, so climb back on top.
     document.addEventListener("fullscreenchange", () => {
       if (root.childElementCount) raise(root);
     });
@@ -187,7 +187,7 @@
 
     const answerBox = el("div", "qk-answer");
     answerBox.appendChild(el("span", "qk-answer-label", "Best answer"));
-    answerBox.appendChild(el("span", "qk-answer-text", best || "—"));
+    answerBox.appendChild(el("span", "qk-answer-text", best || "-"));
     card.appendChild(answerBox);
 
     const confRow = el("div", "qk-conf");

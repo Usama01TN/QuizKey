@@ -1,10 +1,10 @@
-# QuizKey — AI Quiz Assistant (Manifest V3)
+# QuizKey: AI Quiz Assistant (Manifest V3)
 ![Screenshot](public/screenshot.gif)
 
-Press a keyboard shortcut → QuizKey captures the quiz — **as a screenshot or as
-the page's HTML, your choice** (switch in the popup or with `Alt+S`) — sends it to
+Press a keyboard shortcut → QuizKey captures the quiz, **as a screenshot or as
+the page's HTML, your choice** (switch in the popup or with `Alt+S`), sends it to
 an AI model, detects the question and answers, then types the best answer into
-the page with **realistic, per-character keyboard events** — never a paste.
+the page with **realistic, per-character keyboard events**, never a paste.
 
 The HTML source works with any text-only model (including local ones) and is
 cheaper; the Image source needs a vision model but sees everything on screen.
@@ -106,20 +106,20 @@ Presets (all URLs verified against the providers' documentation, Sept 2026):
 | Provider | Base URL | Default model | Notes |
 | --- | --- | --- | --- |
 | **OpenAI** | `https://api.openai.com/v1` | `gpt-4o-mini` | Also `gpt-4o`, `gpt-5.6-terra`, `gpt-5.6-sol`. GPT‑5.x reject `temperature`/`max_tokens`; QuizKey adapts automatically. |
-| **Anthropic Claude** | `https://api.anthropic.com/v1` | `claude-sonnet-5` | Native Messages API. Also `claude-haiku-4-5-20251001`, `claude-opus-5`. Sonnet 5 rejects non-default sampling params — never sent. |
+| **Anthropic Claude** | `https://api.anthropic.com/v1` | `claude-sonnet-5` | Native Messages API. Also `claude-haiku-4-5-20251001`, `claude-opus-5`. Sonnet 5 rejects non-default sampling params, so they are never sent. |
 | **Google Gemini (native)** | `https://generativelanguage.googleapis.com/v1beta` | `gemini-3.8-flash` | Recommended for Gemini. Key from [AI Studio](https://aistudio.google.com/apikey). Gemini 3 always thinks; QuizKey asks for `thinkingLevel: low` + JSON output. |
-| **Google Gemini (OpenAI layer)** | `https://generativelanguage.googleapis.com/v1beta/openai` | `gemini-3.8-flash` | Same key. Google labels this layer beta — prefer the native preset. |
-| **OpenRouter** | `https://openrouter.ai/api/v1` | `openai/gpt-4o-mini` | One key, many models — pick one with image input. |
-| **OmniRoute** (local gateway) | `http://localhost:20128/v1` | `gemini-3-flash` | `npm i -g omniroute && omniroute`; key from Dashboard → Endpoints. Model IDs are plain names (`gemini-3-flash`, `auto`, `claude-sonnet-4-5`). Use a vision model — `auto` may route to a text-only one. |
+| **Google Gemini (OpenAI layer)** | `https://generativelanguage.googleapis.com/v1beta/openai` | `gemini-3.8-flash` | Same key. Google labels this layer beta; prefer the native preset. |
+| **OpenRouter** | `https://openrouter.ai/api/v1` | `openai/gpt-4o-mini` | One key, many models; pick one with image input. |
+| **OmniRoute** (local gateway) | `http://localhost:20128/v1` | `gemini-3-flash` | `npm i -g omniroute && omniroute`; key from Dashboard → Endpoints. Model IDs are plain names (`gemini-3-flash`, `auto`, `claude-sonnet-4-5`). Use a vision model, since `auto` may route to a text-only one. |
 | **LM Studio** (local) | `http://localhost:1234/v1` | *(empty → first loaded)* | Enable **CORS** in the Developer tab. Click **Grant access** in QuizKey settings. |
 | **Ollama** (local) | `http://localhost:11434/v1` | `llama3.2-vision` | `OLLAMA_ORIGINS="*" ollama serve` then `ollama pull llama3.2-vision` (or `qwen2.5vl`, `gemma3`). Click **Grant access**. |
 | **Azure OpenAI** | `https://RES.openai.azure.com/openai/deployments/DEP` | your deployment | QuizKey adds `api-key` header + `api-version` query. |
-| **Custom** | any OpenAI-compatible `/v1` | — | vLLM, llama.cpp, Groq, Mistral, xAI, Together… |
+| **Custom** | any OpenAI-compatible `/v1` | none | vLLM, llama.cpp, Groq, Mistral, xAI, Together… |
 
 OpenAI, Anthropic, Gemini and OpenRouter are granted in the manifest. For any other
 origin QuizKey requests the optional host permission the moment you change the base
 URL (and via **Grant access** / **Test connection**). Without that grant the request is
-subject to CORS, which local servers block — the usual cause of "nothing happens".
+subject to CORS, which local servers block. That is the usual cause of "nothing happens".
 
 ### Provider-quirk handling (why earlier versions "didn't work"):
 
@@ -154,13 +154,13 @@ of the last requests (keys are never logged).
 | `apiStyle` | `auto` \| `openai` \| `gemini` \| `anthropic` | `auto` | API dialect; `auto` infers it from the URL. |
 | `apiBaseUrl` | string | `https://api.openai.com/v1` | Provider base URL. Custom hosts request optional host permission. |
 | `apiKey` | string | `""` | Stored only in `chrome.storage.local`; sent only to the endpoint. Optional for localhost / LAN endpoints. |
-| `requestTimeoutMs` | number | `90000` | Abort threshold — reasoning models can take a while. |
+| `requestTimeoutMs` | number | `90000` | Abort threshold; reasoning models can take a while. |
 | `maxOutputTokens` | number | `4096` | Completion budget (sent as `max_tokens`, or `max_completion_tokens` when the provider demands it). Must be large for reasoning models. |
-| `maxImageEdge` | number | `1600` | The screenshot is downscaled in the worker so its longest edge is ≤ this — smaller upload, fewer vision tokens. `0` disables. |
+| `maxImageEdge` | number | `1600` | The screenshot is downscaled in the worker so its longest edge is ≤ this, for a smaller upload and fewer vision tokens. `0` disables. |
 | `model` | string | `gpt-4o-mini` | Any vision-capable chat model. Empty = first model the server lists (local servers). |
 | `requestTimeoutMs` | number | `45000` | Hard abort for AI requests. |
 | `captureFormat` | `"png"\|"jpeg"` | `jpeg` | Screenshot encoding. |
-| `jpegQuality` | number | `0.85` | 0.1 – 1.0, ignored for PNG. |
+| `jpegQuality` | number | `0.85` | 0.1 to 1.0, ignored for PNG. |
 | `typingDelayMs` | number | `60` | Base delay between keystrokes. |
 | `typingJitterMs` | number | `45` | Random 0…n ms added per keystroke. |
 | `autoType` | boolean | `false` | Type right after analysis (skip `Alt+A`). |
@@ -175,7 +175,7 @@ of the last requests (keys are never logged).
 - Every card and toast has a **close (×)** button; `Esc` closes the overlay while one of
   its controls is focused. Toasts still auto-dismiss.
 - The overlay **stays on top**: its root is a `popover="manual"` element, so it lives in the
-  browser's *top layer* — above every `z-index` on the page, including `<dialog>` modals and
+  browser's *top layer*, above every `z-index` on the page, including `<dialog>` modals and
   the site's own popovers. A `MutationObserver` re-attaches it if a page script removes it
   and re-raises it after fullscreen changes; on browsers without the Popover API it falls
   back to `z-index: 2147483647` as the last child of `<html>`.
@@ -191,7 +191,7 @@ Each character dispatches the exact sequence a physical keyboard produces:
   register every keystroke.
 - Respects caret position and selection ranges; supports `contenteditable`
   via `insertText`.
-- Respects `preventDefault()` — if the page vetoes a key, the simulator
+- Respects `preventDefault()`: if the page vetoes a key, the simulator
   skips it instead of forcing state.
 - Human cadence: configurable base delay, random jitter, longer pauses at
   word boundaries and after punctuation.
@@ -214,40 +214,40 @@ The action badge mirrors state: `…` working, `✓` success, `!` failure.
   `storage`, `commands`, `scripting` (only for on-demand injection on tabs
   opened before install). The API host is a host-permission; custom endpoints
   use **optional** host permissions requested at runtime.
-- The API key never enters page context — AI calls happen only in the
+- The API key never enters page context; AI calls happen only in the
   background worker.
 - Content scripts run in the isolated world and communicate via typed
   messages only.
 
 ## Troubleshooting:
 
-### “This page is restricted…” — what it means and what to do
+### “This page is restricted…”: what it means and what to do
 
 QuizKey classifies the tab and tells you the exact cause. The cases:
 
 | Page kind | Why | What you can do |
 | --- | --- | --- |
-| `chrome://` / `edge://` / `brave://` / `about:` pages (settings, history, new tab…) | Chromium blocks **every** extension from capturing or scripting built-in pages. | Nothing — open a normal website. Not fixable by design. |
-| Web Store / extension galleries | Same hard browser rule, even over https. | Nothing — capture quiz pages on regular sites instead. |
+| `chrome://` / `edge://` / `brave://` / `about:` pages (settings, history, new tab…) | Chromium blocks **every** extension from capturing or scripting built-in pages. | Nothing you can change. Open a normal website; this is not fixable by design. |
+| Web Store / extension galleries | Same hard browser rule, even over https. | Nothing you can change. Capture quiz pages on regular sites instead. |
 | Built-in **PDF viewer** | It runs inside a privileged extension page. | Download the PDF or move the question to a web page. |
-| `file://` local files | **Capture/analysis works out of the box.** Typing & the overlay need a per-extension file grant (browser security rule). | **QuizKey Settings → “Local files (file://)” → Enable file access** (one click), then reopen the file. If you prefer Chrome's own switch: `chrome://extensions → QuizKey → Details → “Allow access to file URLs”` — note Chrome can hide that toggle unless the extension declares URL permissions (QuizKey deliberately asks at runtime instead). |
-| Grant seems ignored / file still silent | Couldn't see WHY without a visible error — hidden cause: the model answered prose instead of JSON. | QuizKey now surfaces the model's best-effort prose answer in the overlay instead of failing silently. Use a stronger vision model if the question is image-heavy. |
-| Tab was open **before** install/reload | Its content script is missing. | QuizKey **auto-injects on capture** (via `chrome.scripting`) — if you still see a messaging error, reload that tab once. |
+| `file://` local files | **Capture/analysis works out of the box.** Typing & the overlay need a per-extension file grant (browser security rule). | **QuizKey Settings → “Local files (file://)” → Enable file access** (one click), then reopen the file. If you prefer Chrome's own switch: `chrome://extensions → QuizKey → Details → “Allow access to file URLs”`. Note that Chrome can hide that toggle unless the extension declares URL permissions (QuizKey deliberately asks at runtime instead). |
+| Grant seems ignored / file still silent | Couldn't see WHY without a visible error. The hidden cause: the model answered prose instead of JSON. | QuizKey now surfaces the model's best-effort prose answer in the overlay instead of failing silently. Use a stronger vision model if the question is image-heavy. |
+| Tab was open **before** install/reload | Its content script is missing. | QuizKey **auto-injects on capture** (via `chrome.scripting`). If you still see a messaging error, reload that tab once. |
 
 ### Other common issues:
 
-- **“Unreadable response” / empty reply** — the model is not vision-capable, or spent its
+- **“Unreadable response” / empty reply**: the model is not vision-capable, or spent its
   output budget on reasoning. Use a vision model; for reasoning models keep `maxOutputTokens`
   ≥ 4096. Prose replies are now shown as a low-confidence answer instead of failing.
-- **“No permission to contact …”** — open settings and click **Grant access** next to the
+- **“No permission to contact …”**: open settings and click **Grant access** next to the
   base URL (custom / local endpoints only; OpenAI, Gemini and OpenRouter are pre-granted).
-- **Local server unreachable** — Ollama: `OLLAMA_ORIGINS="*" ollama serve`; LM Studio: turn
+- **Local server unreachable**: Ollama: `OLLAMA_ORIGINS="*" ollama serve`; LM Studio: turn
   on CORS. Both need the host-permission grant above.
-- **HTTP 400 on GPT‑5 / o‑series** — handled automatically (`max_completion_tokens`, no
+- **HTTP 400 on GPT‑5 / o‑series**: handled automatically (`max_completion_tokens`, no
   `temperature`); if a provider rejects another parameter the toast now shows its exact text.
-- **Test connection fails on OmniRoute/gateways** — QuizKey first tries `GET /models`,
+- **Test connection fails on OmniRoute/gateways**: QuizKey first tries `GET /models`,
   then falls back to a 1-token chat ping automatically.
-- **Gemini gives NO_ANSWER on dense pages** — lower the JPEG quality slider or use
+- **Gemini gives NO_ANSWER on dense pages**: lower the JPEG quality slider or use
   a stronger model (e.g. `gemini-3.8-pro`).
-- **Nothing types** — focus the target field once, then press `Alt+A`; the
+- **Nothing types**: focus the target field once, then press `Alt+A`; the
   focused field always wins over heuristics.

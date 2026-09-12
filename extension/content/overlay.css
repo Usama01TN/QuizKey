@@ -1,10 +1,10 @@
 /* ------------------------------------------------------------------
-   QuizKey overlay — namespaced styles (qk-) injected into host pages.
+   QuizKey overlay: namespaced styles (qk-) injected into host pages.
    Everything is fixed/absolute and z-indexed above typical UI.
    ------------------------------------------------------------------ */
 
 #quizkey-overlay-root {
-  /* theme tokens — dark by default, flipped by [data-theme="light"] */
+  /* theme tokens: dark by default, flipped by [data-theme="light"] */
   --qk-text: #ececf1;
   --qk-surface: rgba(16, 17, 23, 0.96);
   --qk-border: rgba(255, 255, 255, 0.1);
@@ -20,7 +20,7 @@
   --qk-red: #f87171;
   --qk-viol: #a5a6fa;
   /* The root is a popover (top layer). The UA popover stylesheet sets
-     inset:0 / margin:auto / border / padding / background — reset all of it
+     inset:0 / margin:auto / border / padding / background, so reset all of it
      so the root is just an invisible anchor in the chosen corner. The
      !important flags also protect us from aggressive page resets. */
   position: fixed !important;
