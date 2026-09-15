@@ -14,9 +14,8 @@ export const DONATIONS = [
     handle: "@IninouUsama",
     url: "https://ba9chich.com/IninouUsama",
     icon: Wallet,
-    blurb:
-      "Tunisian tipping platform. Pays out in TND and accepts local cards, e-DINAR and Flouci. The easiest option if you're in Tunisia.",
-    tags: ["TND", "Local cards", "Flouci"],
+    blurb: "Tunisian tipping platform. Pays out in TND and accepts local cards, e-DINAR and Flouci. The easiest option if you're in Tunisia.",
+    tags: ["TND", "Local cards", "Flouci", "e-DINAR", "PayPal"],
     accent: "acid" as const,
   },
   {
@@ -25,8 +24,7 @@ export const DONATIONS = [
     handle: "ko-fi.com/usamatn",
     url: "https://ko-fi.com/usamatn",
     icon: Coffee,
-    blurb:
-      "International support via card, Apple Pay or PayPal. One-off tips or a monthly membership, no account needed to give.",
+    blurb: "International support via card, Apple Pay or PayPal. One-off tips or a monthly membership, no account needed to give.",
     tags: ["Card", "PayPal", "Monthly"],
     accent: "viol" as const,
   },
