@@ -251,3 +251,17 @@ QuizKey classifies the tab and tells you the exact cause. The cases:
   a stronger model (e.g. `gemini-3.8-pro`).
 - **Nothing types**: focus the target field once, then press `Alt+A`; the
   focused field always wins over heuristics.
+
+---
+
+## Support
+
+QuizKey is free, open source, and runs entirely on your own API key, with no telemetry, no
+accounts, no paywall. If it saved you some time, you can tip the project:
+
+- **Ba9chich**: [ba9chich.com/IninouUsama](https://ba9chich.com/IninouUsama) · TND, local
+  Tunisian cards, e-DINAR and Flouci.
+- **Ko-fi**: [ko-fi.com/usamatn](https://ko-fi.com/usamatn) · card, Apple Pay or PayPal,
+  one-off or monthly.
+
+Entirely optional. Starring the repo helps just as much.

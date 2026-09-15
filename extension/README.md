@@ -267,3 +267,12 @@ QuizKey classifies the tab and tells you the exact cause. The cases:
 - **HTML source: "The page HTML could not be read"**: the content script isn't attached
   (restricted page, or a tab opened before install). Reload the tab once; the Image
   source doesn't need the content script for capture and can be used meanwhile.
+
+## Support
+
+Free and open source, funded by nobody. Tips are welcome and entirely optional:
+
+- **Ba9chich**: https://ba9chich.com/IninouUsama (TND, local cards, e-DINAR, Flouci)
+- **Ko-fi**: https://ko-fi.com/usamatn (card, Apple Pay, PayPal)
+
+Both links are also in the popup (**♥ Support**) and in **Settings → 08 Support the project**.

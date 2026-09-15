@@ -5,6 +5,7 @@ import Features from "./components/Features";
 import Architecture from "./components/Architecture";
 import SourceExplorer from "./components/SourceExplorer";
 import Docs from "./components/Docs";
+import Support from "./components/Support";
 import Footer from "./components/Footer";
 
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
         <Architecture />
         <SourceExplorer />
         <Docs />
+        <Support />
       </main>
       <Footer />
     </div>

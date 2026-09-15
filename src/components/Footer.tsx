@@ -1,4 +1,4 @@
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, Coffee, Wallet } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -21,13 +21,33 @@ export default function Footer() {
           No paste events were harmed (or used) in the making of this extension.
         </p>
 
-        <a
-          href="#top"
-          className="flex h-10 items-center gap-2 rounded-xl border border-fg/10 px-4 text-[12px] font-semibold text-mist transition-colors hover:border-acid/40 hover:text-acid"
-        >
-          <ArrowUp size={14} />
-          Back to top
-        </a>
+        <div className="flex flex-wrap items-center justify-center gap-2.5">
+          <a
+            href="https://ba9chich.com/IninouUsama"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="flex h-10 items-center gap-2 rounded-xl border border-fg/10 px-4 text-[12px] font-semibold text-mist transition-colors hover:border-acid/40 hover:text-acid"
+          >
+            <Wallet size={14} />
+            Ba9chich
+          </a>
+          <a
+            href="https://ko-fi.com/usamatn"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="flex h-10 items-center gap-2 rounded-xl border border-fg/10 px-4 text-[12px] font-semibold text-mist transition-colors hover:border-viol/40 hover:text-viol"
+          >
+            <Coffee size={14} />
+            Ko-fi
+          </a>
+          <a
+            href="#top"
+            className="flex h-10 items-center gap-2 rounded-xl border border-fg/10 px-4 text-[12px] font-semibold text-mist transition-colors hover:border-acid/40 hover:text-acid"
+          >
+            <ArrowUp size={14} />
+            Back to top
+          </a>
+        </div>
       </div>
     </footer>
   );

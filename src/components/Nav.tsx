@@ -8,6 +8,7 @@ const LINKS = [
   { href: "#architecture", label: "Architecture" },
   { href: "#source", label: "Source" },
   { href: "#install", label: "Install" },
+  { href: "#support", label: "Support" },
 ];
 
 export default function Nav() {

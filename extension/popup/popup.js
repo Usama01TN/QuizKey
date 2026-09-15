@@ -30,6 +30,8 @@ import { initTheme } from "../lib/theme.js";
     resultConf: $("#result-conf"),
     resultConfNum: $("#result-conf-num"),
     btnOptions: $("#btn-options"),
+    btnDonate: $("#btn-donate"),
+    donate: $("#donate"),
     modelLabel: $("#model-label"),
   };
 
@@ -246,6 +248,17 @@ import { initTheme } from "../lib/theme.js";
   });
   els.btnType.addEventListener("click", () => void runAction("type"));
   els.btnOptions.addEventListener("click", () => chrome.runtime.openOptionsPage());
+
+  // Support panel: collapsed by default, opens the donation page in a new tab.
+  els.btnDonate.addEventListener("click", () => {
+    const open = els.donate.hidden;
+    els.donate.hidden = !open;
+    els.btnDonate.setAttribute("aria-expanded", String(open));
+  });
+  els.donate.addEventListener("click", (e) => {
+    const url = e.target.closest("[data-url]")?.dataset.url;
+    if (url) chrome.tabs.create({ url });
+  });
 
   void initTheme({ toggle: $("#btn-theme") });
   void loadState();

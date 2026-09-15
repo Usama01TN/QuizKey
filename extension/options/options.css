@@ -321,3 +321,29 @@ button:not(:disabled) { cursor: pointer; }
 .seg-text small { font-size: 12px; line-height: 1.45; color: var(--muted); font-weight: 500; }
 .seg-btn[aria-checked="true"] .seg-text small { color: var(--text-strong); }
 @media (max-width: 560px) { .seg { grid-template-columns: 1fr; } }
+
+/* ---------- donations ---------- */
+.donate-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+.donate-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.16s ease, transform 0.16s ease;
+}
+.donate-card:hover { border-color: var(--lime); transform: translateY(-2px); }
+.donate-name { font-size: 15px; font-weight: 750; }
+.donate-handle {
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  color: var(--lime-text);
+}
+.donate-note { margin-top: 4px; font-size: 12px; line-height: 1.55; color: var(--muted); }
