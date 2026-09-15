@@ -254,7 +254,7 @@ QuizKey classifies the tab and tells you the exact cause. The cases:
 
 ---
 
-## Support
+## Support:
 
 QuizKey is free, open source, and runs entirely on your own API key, with no telemetry, no
 accounts, no paywall. If it saved you some time, you can tip the project:
