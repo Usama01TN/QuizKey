@@ -260,7 +260,7 @@ QuizKey is free, open source, and runs entirely on your own API key, with no tel
 accounts, no paywall. If it saved you some time, you can tip the project:
 
 - **Ba9chich**: [ba9chich.com/IninouUsama](https://ba9chich.com/IninouUsama) · TND, local
-  Tunisian cards, e-DINAR and Flouci.
+  Tunisian cards, e-DINAR and Flouci or Paypal.
 - **Ko-fi**: [ko-fi.com/usamatn](https://ko-fi.com/usamatn) · card, Apple Pay or PayPal,
   one-off or monthly.
 
